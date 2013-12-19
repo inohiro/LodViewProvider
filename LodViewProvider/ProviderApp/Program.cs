@@ -8,18 +8,8 @@ using LodViewProvider;
 namespace ProviderApp {
 	class Program {
 		static void Main( string[] args ) {
-			var provider = LodViewProvider.LodViewProvider.CreateQueryable<int>();
-
-			var query = provider.Select( e => e == 1 );
-			Console.WriteLine( query.Expression );
-
-			foreach( var a in query ) { Console.WriteLine( a ); }
-
+			Console.WriteLine( "Hello, World" );
 			Console.ReadKey();
-
-			// var tuples = LodViewProvider.QueryableLodTuple<string>();
-			string url = "";
-			var tuples = new LodViewProvider.QueryableLodTuple( url);
 		}
 
 		static void Image () {

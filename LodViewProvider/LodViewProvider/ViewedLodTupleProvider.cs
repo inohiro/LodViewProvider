@@ -6,29 +6,29 @@ using System.Linq.Expressions;
 
 namespace LodViewProvider {
 
-	public class ViewedLodTupleProvider : IQueryProvider {
+	public class ViewedLodProvider : IQueryProvider {
+
+		private readonly string viewUrl;
+
+		public ViewedLodProvider( string viewUrl ) {
+			this.viewUrl = viewUrl;
+		}
+
+		public IQueryable<TElement> CreateQuery<TElement>( Expression expression ) {
+			return ( IQueryable<TElement> ) new ViewedLodResourceContext( this, expression );
+		}
 
 		public IQueryable CreateQuery( Expression expression ) {
-			Type elementType = TypeSystem.GetElementType( expression.Type );
-			try {
-				return ( IQueryable ) Activator.CreateInstance(
-					typeof( QueryableLodTuple<> ).MakeGenericType( elementType ),
-					new object[] { this, expression } );
-			}
-			catch ( System.Reflection.TargetInvocationException tie ) { throw tie.InnerException; }
-		}
-
-		public IQueryable<TResult> CreateQuery<TResult>( Expression expression ) {
-			return new QueryableLodTuple<TResult>( this, expression );
-		}
-
-		public object Execute( Expression expression ) {
-			return ViewedLodQueryContext.Execute( expression, false );
+			return new ViewedLodResourceContext( this, expression );
 		}
 
 		public TResult Execute<TResult>( Expression expression ) {
-			bool isEnumerable = ( typeof( TResult ).Name == "IEnumerable`1" );
-			return ( TResult ) ViewedLodQueryContext.Execute( expression, isEnumerable );
+			var isEnumerable = ( typeof( TResult ).Name == "IEnumerable`1" );
+			return ( TResult ) ViewedLodQueryContext.Execute( expression, isEnumerable, viewUrl );
+		}
+
+		public object Execute( Expression expression ) {
+			throw new NotImplementedException();
 		}
 	}
 }
