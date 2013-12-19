@@ -15,11 +15,11 @@ namespace LodViewProvider {
 		}
 
 		public IQueryable<TElement> CreateQuery<TElement>( Expression expression ) {
-			return ( IQueryable<TElement> ) new ViewedLodResourceContext( this, expression );
+			return ( IQueryable<TElement> ) new ViewedLodContext( this, expression );
 		}
 
 		public IQueryable CreateQuery( Expression expression ) {
-			return new ViewedLodResourceContext( this, expression );
+			return new ViewedLodContext( this, expression );
 		}
 
 		public TResult Execute<TResult>( Expression expression ) {

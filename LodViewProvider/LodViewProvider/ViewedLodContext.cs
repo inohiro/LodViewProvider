@@ -7,17 +7,17 @@ using System.Data.Objects;
 
 namespace LodViewProvider {
 
-	public class ViewedLodResourceContext : IOrderedQueryable<Resource> {
+	public class ViewedLodContext : IOrderedQueryable<Resource> {
 
 		public string ViewUrl { get; private set; }
 		public IQueryProvider Provider { get; private set; }
 		public Expression Expression { get; private set; }
 
-		public ViewedLodResourceContext( string viewUrl ) {
+		public ViewedLodContext( string viewUrl ) {
 			ViewUrl = viewUrl;
 		}
 
-		internal ViewedLodResourceContext( IQueryProvider provider, Expression expression ) {
+		internal ViewedLodContext( IQueryProvider provider, Expression expression ) {
 			Provider = provider;
 			Expression = expression;
 		}
