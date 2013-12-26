@@ -6,6 +6,9 @@ using System.Linq.Expressions;
 
 namespace LodViewProvider {
 
+	/// <summary>
+	/// Execute several operations to LOD
+	/// </summary>
 	public class LodViewExecute {
 
 		internal static object Execute( Expression expression, bool isEnumerable, string viewUrl ) {

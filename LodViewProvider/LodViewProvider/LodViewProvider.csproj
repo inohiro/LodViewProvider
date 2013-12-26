@@ -50,6 +50,7 @@
     <Compile Include="InnermostWhereFinder.cs" />
     <Compile Include="InvalidQueryException.cs" />
     <Compile Include="LodViewContext.cs" />
+    <Compile Include="MethodCallExpressionTypeFinder.cs" />
     <Compile Include="Query.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Resource.cs" />

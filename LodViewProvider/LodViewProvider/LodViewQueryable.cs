@@ -8,6 +8,9 @@ using System.Data.Objects;
 
 namespace LodViewProvider {
 
+	/// <summary>
+	/// Object which is queried
+	/// </summary>
 	public class LodViewQueryable : IQueryable<Resource> { // IOrderedQueryable<Resource> {
 
 		public string ViewUrl { get; private set; }
