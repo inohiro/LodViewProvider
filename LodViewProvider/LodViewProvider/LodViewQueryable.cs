@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,30 +8,30 @@ using System.Data.Objects;
 
 namespace LodViewProvider {
 
-	public class LodViewExecute : IQueryable<Resource> { // IOrderedQueryable<Resource> {
+	public class LodViewQueryable : IQueryable<Resource> { // IOrderedQueryable<Resource> {
 
 		public string ViewUrl { get; private set; }
 		public IQueryProvider Provider { get; private set; }
 		public Expression Expression { get; private set; }
 
-		public LodViewExecute( string viewUrl ) {
+		public LodViewQueryable( LodViewContext context, string viewUrl ) {
 			ViewUrl = viewUrl;
 			Provider = new LodViewQueryProvider( viewUrl );
 			Expression = Expression.Constant( this );
 		}
 
-		internal LodViewExecute( IQueryProvider provider, Expression expression ) {
+		internal LodViewQueryable( LodViewQueryProvider provider, Expression expression ) {
+			// TODO: Error processing is required
 			Provider = provider;
 			Expression = expression;
 		}
 
 		public IEnumerator<Resource> GetEnumerator() {
-			return ( Provider.Execute<IEnumerable<Resource>>( Expression ) ).GetEnumerator();
+			return Provider.Execute<IEnumerable<Resource>>( Expression ).GetEnumerator();
 		}
 
-		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() {
-			// return Provider.Execute<System.Collections.IEnumerable>( Expression ).GetEnumerator();
-			return GetEnumerator();
+		IEnumerator IEnumerable.GetEnumerator() {
+			return ( Provider.Execute<IEnumerable>( Expression ) ).GetEnumerator();
 		}
 
 		public Type ElementType {
