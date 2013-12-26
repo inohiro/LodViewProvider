@@ -6,8 +6,22 @@ using System.Collections.ObjectModel;
 
 namespace LodViewProvider {
 
-	internal class InnermostWhereFinder {
-		public InnermostWhereFinder( Expression expression ) {
+	internal class InnermostWhereFinder : ExpressionVisitor {
+
+		private MethodCallExpression innermostWhereExperssion;
+
+		public MethodCallExpression GetInnermostWhere( Expression expression ) {
+			Visit( expression );
+			return innermostWhereExperssion;
+		}
+
+		protected override Expression VisitMethodCall( MethodCallExpression expression ) {
+			if ( expression.Method.Name == "Where" ) {
+				innermostWhereExperssion = expression;
+			}
+
+			Visit( expression.Arguments[0] );
+			return expression;
 		}
 	}
 }

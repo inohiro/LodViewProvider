@@ -7,23 +7,25 @@ using System.Data.Objects;
 
 namespace LodViewProvider {
 
-	public class ViewedLodContext : IOrderedQueryable<Resource> {
+	public class LodViewExecute : IQueryable<Resource> { // IOrderedQueryable<Resource> {
 
 		public string ViewUrl { get; private set; }
 		public IQueryProvider Provider { get; private set; }
 		public Expression Expression { get; private set; }
 
-		public ViewedLodContext( string viewUrl ) {
+		public LodViewExecute( string viewUrl ) {
 			ViewUrl = viewUrl;
+			Provider = new LodViewQueryProvider( viewUrl );
+			Expression = Expression.Constant( this );
 		}
 
-		internal ViewedLodContext( IQueryProvider provider, Expression expression ) {
+		internal LodViewExecute( IQueryProvider provider, Expression expression ) {
 			Provider = provider;
 			Expression = expression;
 		}
 
 		public IEnumerator<Resource> GetEnumerator() {
-			return Provider.Execute<IEnumerable<Resource>>( Expression ).GetEnumerator();
+			return ( Provider.Execute<IEnumerable<Resource>>( Expression ) ).GetEnumerator();
 		}
 
 		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() {

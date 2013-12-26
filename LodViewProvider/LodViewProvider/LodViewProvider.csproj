@@ -31,6 +31,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.5.0.8\lib\net40\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data.Entity" />
@@ -42,18 +45,25 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ExpressionTreeModifier.cs" />
+    <Compile Include="ExpressionTreeVisitor.cs" />
     <Compile Include="InnermostWhereFinder.cs" />
     <Compile Include="InvalidQueryException.cs" />
+    <Compile Include="LodViewContext.cs" />
     <Compile Include="Query.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Resource.cs" />
+    <Compile Include="Result.cs" />
     <Compile Include="TypeSystem.cs" />
-    <Compile Include="ViewedLodContext.cs" />
-    <Compile Include="ViewedLodQueryContext.cs" />
-    <Compile Include="ViewedLodTupleProvider.cs" />
+    <Compile Include="LodViewQueryable.cs" />
+    <Compile Include="LodViewExecute.cs" />
+    <Compile Include="LodViewQueryProvider.cs" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

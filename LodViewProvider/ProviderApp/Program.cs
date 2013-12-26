@@ -9,6 +9,14 @@ namespace ProviderApp {
 	class Program {
 		static void Main( string[] args ) {
 			Console.WriteLine( "Hello, World" );
+
+			var context = new LodViewExecute( "this is URL of View" );
+			var values = context.Select( e => e.Values["name"] == "inohiro" );
+			var expression = context.Expression;
+
+			Console.WriteLine( values.ToString() );
+
+			Console.WriteLine( expression );
 			Console.ReadKey();
 		}
 

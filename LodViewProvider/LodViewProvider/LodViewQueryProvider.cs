@@ -6,25 +6,27 @@ using System.Linq.Expressions;
 
 namespace LodViewProvider {
 
-	public class ViewedLodProvider : IQueryProvider {
+	public class LodViewQueryProvider : IQueryProvider {
+
+		public LodViewContext Context { get; set; }
 
 		private readonly string viewUrl;
 
-		public ViewedLodProvider( string viewUrl ) {
+		public LodViewQueryProvider( string viewUrl ) {
 			this.viewUrl = viewUrl;
 		}
 
 		public IQueryable<TElement> CreateQuery<TElement>( Expression expression ) {
-			return ( IQueryable<TElement> ) new ViewedLodContext( this, expression );
+			return ( IQueryable<TElement> ) new LodViewExecute( this, expression );
 		}
 
 		public IQueryable CreateQuery( Expression expression ) {
-			return new ViewedLodContext( this, expression );
+			return new LodViewExecute( this, expression );
 		}
 
 		public TResult Execute<TResult>( Expression expression ) {
-			var isEnumerable = ( typeof( TResult ).Name == "IEnumerable`1" );
-			return ( TResult ) ViewedLodQueryContext.Execute( expression, isEnumerable, viewUrl );
+			bool isEnumerable = ( typeof( TResult ).Name == "IEnumerable`1" );
+			return ( TResult ) LodViewExecute.Execute( expression, isEnumerable, viewUrl );
 		}
 
 		public object Execute( Expression expression ) {
