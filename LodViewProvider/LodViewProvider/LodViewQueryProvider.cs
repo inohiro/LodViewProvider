@@ -34,8 +34,6 @@ namespace LodViewProvider {
 		}
 
 		public TResult Execute<TResult>( Expression expression ) {
-			// bool isEnumerable = ( typeof( TResult ).Name == "IEnumerable`1" );
-			// return ( TResult ) LodViewQueryable.Execute( expression, isEnumerable, viewUrl );
 			bool isEnumerable = typeof( TResult ).Name == "IEnumerable `1" || typeof( TResult ).Name == "IEnumerable";
 			Type resultType = new MethodCallExpressionTypeFinder().GetGenericType( expression );
 			var genericArguments = new[] { resultType };

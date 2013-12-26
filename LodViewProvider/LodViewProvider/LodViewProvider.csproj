@@ -38,6 +38,7 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Data.Entity" />
     <Reference Include="System.Data.Linq" />
+    <Reference Include="System.Net" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -53,12 +54,14 @@
     <Compile Include="MethodCallExpressionTypeFinder.cs" />
     <Compile Include="Query.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RequestProcessor.cs" />
     <Compile Include="Resource.cs" />
     <Compile Include="Result.cs" />
     <Compile Include="TypeSystem.cs" />
     <Compile Include="LodViewQueryable.cs" />
     <Compile Include="LodViewExecute.cs" />
     <Compile Include="LodViewQueryProvider.cs" />
+    <Compile Include="WhereClauseFinder.cs" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
