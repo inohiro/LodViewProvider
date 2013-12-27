@@ -14,9 +14,6 @@ namespace LodViewProvider {
 
 		public LodViewContext Context { get; set; }
 
-		public LodViewQueryProvider() {
-		}
-
 		public IQueryable<TElement> CreateQuery<TElement>( Expression expression ) {
 			return ( IQueryable<TElement> ) new LodViewQueryable( this, expression );
 		}

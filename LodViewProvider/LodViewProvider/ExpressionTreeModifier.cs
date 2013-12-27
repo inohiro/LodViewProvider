@@ -22,5 +22,9 @@ namespace LodViewProvider {
 		//        return node;
 		//    }
 		//}
+
+		internal Expression CopyAndModify( Expression expression ) {
+			return Visit( expression );
+		}
 	}
 }

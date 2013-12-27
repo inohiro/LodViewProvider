@@ -12,11 +12,6 @@ namespace LodViewProvider {
 		}
 
 		/// <summary>
-		/// Target View URI (API)
-		/// </summary>
-		public string ViewURL { get; set; }
-
-		/// <summary>
 		/// Set of condition
 		/// </summary>
 		public Dictionary<string, string> GetParameters( LambdaExpression lambdaExpression ) {
@@ -26,15 +21,19 @@ namespace LodViewProvider {
 
 		public string QueryString { get; set; }
 
-		public string BuildURL( Dictionary<string, string> parameters ) {
-			return "";
-		}
-
 		/// <summary>
 		/// Result
 		/// </summary>
 		public string Result { get; set; }
 
-		
+		internal Request CreateRequest( string ViewURI, Dictionary<string, string> parameters ) {
+			QueryParameter queryParameter = new QueryParameter( parameters );
+			Request request = new Request( ViewURI, queryParameter );
+			return request;
+		}
+
+		internal List<Resource> ProcessResult( string result ) {
+			throw new NotImplementedException();
+		}
 	}
 }

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Linq.Expressions;
+using System.Net;
+using System.IO;
 
 namespace LodViewProvider {
 
@@ -11,36 +13,39 @@ namespace LodViewProvider {
 	/// </summary>
 	public class LodViewExecute {
 
-		internal static object Execute( Expression expression, bool isEnumerable, string viewUrl ) {
+		internal static string RequestToLod( Request request, RequestProcessor requestProcessor ) {
+			// TODO: create Logger
 
-			/*
-			var queryableResources = RequestToLod( viewUrl );
-			var treeCopier = new ExpressionTreeModifier( queryableResources );
-			var newExpressionTree = treeCopier.Visit( expression );
-			*/
+			string response = String.Empty;
+			string httpStatus = String.Empty;
+			WebClient client = new WebClient();
 
-			InnermostWhereFinder whereFinder = new InnermostWhereFinder();
-			MethodCallExpression whereExpression = whereFinder.GetInnermostWhere( expression );
-			LambdaExpression lambdaExpression = ( LambdaExpression ) ( ( UnaryExpression ) ( whereExpression.Arguments[1] ) ).Operand;
+			try {
+				Stream stream = client.OpenRead( request.FullURL() );
 
-			// IMA KOKO
+				// TODO: Consider Async Access
+				// client.OpenReadAsync( new Uri( request.FullURL()));
 
-			if ( isEnumerable ) {
-				return queryableResources.Provider.CreateQuery( newExpressionTree );
+				StreamReader streamReader = new StreamReader( stream );
+				response = streamReader.ReadToEnd();
 			}
-			else {
-				return queryableResources.Provider.Execute( newExpressionTree );
+			catch ( WebException webex ) {
+				// TODO: Logger.log( webex );
+				throw webex;
 			}
+
+			// TODO: should check the status code
+			return response;
 		}
 
-		private static IQueryable<Resource> RequestToLod( string viewUrl ) {
-			var list = new List<Resource>();
-			var hash = new Dictionary<string, string>();
-			hash.Add( "name", "inohiro" );
-			hash.Add( "viewUrl", viewUrl );
-			list.Add( new Resource( "hello", hash ) );
+		private static WebRequest createWebRequest( Request request ) {
+			Uri requestUri = new Uri( request.FullURL() );
+			return HttpWebRequest.Create( requestUri );
+			// return WebRequest.Create( requestUri );
+		}
 
-			return list.AsQueryable();
+		internal static void dispose() {
+			throw new NotImplementedException();
 		}
 	}
 }

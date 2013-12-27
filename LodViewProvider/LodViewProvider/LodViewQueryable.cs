@@ -19,8 +19,9 @@ namespace LodViewProvider {
 
 		public LodViewQueryable( LodViewContext context, string viewUrl ) {
 			ViewUrl = viewUrl;
-			Provider = new LodViewQueryProvider( viewUrl );
+			Provider = new LodViewQueryProvider();
 			Expression = Expression.Constant( this );
+			( ( LodViewQueryProvider ) Provider ).Context = context;
 		}
 
 		internal LodViewQueryable( LodViewQueryProvider provider, Expression expression ) {

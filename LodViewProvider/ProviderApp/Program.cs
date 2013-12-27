@@ -10,13 +10,14 @@ namespace ProviderApp {
 		static void Main( string[] args ) {
 			Console.WriteLine( "Hello, World" );
 
-			var context = new LodViewQueryable( "this is URL of View" );
-			var values = context.Select( e => e.Values["name"] == "inohiro" );
-			var expression = context.Expression;
+			var context = new LodViewContext( "" ).LodView();
 
-			Console.WriteLine( values.ToString() );
+			var values = context.Select( e => e );
+			// var expression = context.Expression;
 
-			Console.WriteLine( expression );
+			foreach ( var v in values ) {
+				Console.WriteLine( v );
+			}
 			Console.ReadKey();
 		}
 
