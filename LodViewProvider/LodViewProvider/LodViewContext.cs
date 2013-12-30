@@ -39,9 +39,9 @@ namespace LodViewProvider {
 		public virtual object Execute<T>( Expression expression, bool isEnumerable ) {
 			// var requestProcessor = createRequestProcessor( expression );
 			var requestProcessor = new RequestProcessor();
-			var parameters = getRequestParameters( expression, requestProcessor );
+			var filters = getRequestParameters( expression, requestProcessor );
 
-			Request request = requestProcessor.CreateRequest( ViewURI, parameters );
+			Request request = requestProcessor.CreateRequest( ViewURI, filters );
 			string result = LodViewExecute.RequestToLod( request, requestProcessor );
 
 			// var queryableList = requestProcessor.ProcessResult( result );
@@ -57,9 +57,7 @@ namespace LodViewProvider {
 			return queryableResources.Provider.Execute( newExpressionTree );
 		}
 
-		// private List<Filter> getRequestParameters( Expression expression, RequestProcessor requestProcessor ) {
-		private Dictionary<string, string> getRequestParameters( Expression expression, RequestProcessor requestProcessor ) {
-			var parameters = new Dictionary<string, string>();
+		private List<Filter> getRequestParameters( Expression expression, RequestProcessor requestProcessor ) {
 			var filters = new List<Filter>();
 
 			var whereExpressions = new WhereClauseFinder().GetAllWheres( expression );
@@ -68,14 +66,20 @@ namespace LodViewProvider {
 				lambdaExpression = ( LambdaExpression ) Evaluator.PartialEval( lambdaExpression );
 
 				var filter = requestProcessor.GetParameters( lambdaExpression );
-				//foreach ( var newParameter in newParameters ) {
-				//    if ( !parameters.ContainsKey( newParameter.Key ) ) {
-				//        parameters.Add( newParameter.Key, newParameter.Value );
-				//    }
-				// }
+				filters.Add( filter );
 			}
 
-			return parameters;
+			// TODO: Aggregate Function { 'sum', 'avg', 'count', 'min', 'max' }
+			// http://www.w3.org/TR/sparql11-query/#sparqlAlgebra
+			//
+			// var aggFunctions = AggregateFunctionFinder().GetAllFunctions( expression );
+			// foreach( var aggFunc in aggFunctions ) {
+			//   var lambdaExpression = ~~
+			//   var filter = requestProcessor.GetAggregationParameters( lambdaExpression );
+			//   filters << filter
+			//
+
+			return filters;
 		}
 	}
 }

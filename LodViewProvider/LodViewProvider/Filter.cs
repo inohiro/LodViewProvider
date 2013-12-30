@@ -33,10 +33,10 @@ namespace LodViewProvider {
 		public override string ToString() {
 			var str = new StringBuilder();
 			str.Append( "{" );
-			str.Append( String.Format( "\"type\":\"{0}\",", FilterType.ToString() ) );
-			str.Append( String.Format( "\"var\":\"{0}\",", Left ) );
-			str.Append( String.Format( "\"operator\":\"{0}\",", Operator  ));
-			str.Append( String.Format( "\"condition\":\"{0}\"", Right ) );
+			str.Append( String.Format( "type:{0},", FilterType.ToString() ) );
+			str.Append( String.Format( "var:{0},", Left ) );
+			str.Append( String.Format( "operator:{0},", Operator  ));
+			str.Append( String.Format( "condition:{0}", Right ) );
 			str.Append( "}" );
 			return str.ToString();
 		}

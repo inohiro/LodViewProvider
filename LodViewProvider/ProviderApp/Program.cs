@@ -8,14 +8,14 @@ using LodViewProvider;
 namespace ProviderApp {
 	class Program {
 		static void Main( string[] args ) {
-			Console.WriteLine( "Hello, World" );
 
-			// var context = new LodViewContext( "" ).LodView();
-			var context = new LodViewContext( "" ).Resource;
+			string viewUrl = "http://lodviewwebapp.herokuapp.com/test/1/";
+			var context = new LodViewContext( viewUrl ).Resource;
 
 			// var values = context.Select( e => e.Values["name"] == "inohiro" );
 			var values = from resource in context
-						 where resource.Values["names"] == "inohiro"
+// 						 from resouce2 in context2
+						 where resource.Values["names"] == "inohiro" //  && resouce2.Values["names"]
 						 select resource;
 
 			var values2 = context.Where( r => r.Values["name"] == "inohiro" );
@@ -28,6 +28,13 @@ namespace ProviderApp {
 
 			Console.ReadKey();
 		}
+
+		/*
+		 * Aggregate Functions
+		 * セレクティびてぃの異なるクエリを幾つか実行してみる
+		 * 　　LINQで処理する，APIで処理する，SPARQL Endpoint で処理する
+		 * コスト式を考える
+		 */
 
 		static void Image () {
 

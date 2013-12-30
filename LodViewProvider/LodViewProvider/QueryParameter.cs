@@ -11,21 +11,21 @@ namespace LodViewProvider {
 
 	public class QueryParameter {
 
+		public List<Filter> Filters { get; private set; }
+
 		public QueryParameter() {
-			Filters = new Dictionary<string, string>();
+			Filters = new List<Filter>();
 		}
 
-		public QueryParameter( Dictionary<string,string> filters ) {
+		public QueryParameter( List<Filter> filters ) {
 			Filters = filters;
 		}
 
-		public Dictionary<string, string> Filters { get; private set; }
-
-		public string QueryString () {
+		public string CreateQueryString () {
 			string serializedFilters = JsonConvert.SerializeObject( Filters );
 			string encodedQuery = HttpUtility.UrlEncode( serializedFilters );
 			// TODO: Consider empty query string
-			return String.Format( "query={0}", serializedFilters );
+			return String.Format( "query={0}", encodedQuery );
 		}
 	}
 }

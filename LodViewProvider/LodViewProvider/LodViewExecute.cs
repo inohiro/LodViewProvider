@@ -22,7 +22,8 @@ namespace LodViewProvider {
 
 			try {
 				// TODO: Check Full URL
-				Stream stream = client.OpenRead( request.FullURL() );
+				string fullUrl = request.FullURL();
+				Stream stream = client.OpenRead( fullUrl );
 
 				// TODO: Consider Async Access
 				// client.OpenReadAsync( new Uri( request.FullURL()));

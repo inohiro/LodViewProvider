@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Web;
+
+using Newtonsoft.Json;
 
 namespace LodViewProvider {
 
@@ -21,7 +24,7 @@ namespace LodViewProvider {
 		}
 
 		public string FullURL () {
-			string queryString = Parameter.QueryString();
+			string queryString = Parameter.CreateQueryString();
 			// TODO: Check the URL adn QueryString are valid or not
 
 			return String.Format( "{0}?{1}", ViewURL, queryString );

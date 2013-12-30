@@ -65,14 +65,15 @@ namespace LodViewProvider {
 		/// </summary>
 		public string Result { get; set; }
 
-		internal Request CreateRequest( string ViewURI, Dictionary<string, string> parameters ) {
-			QueryParameter queryParameter = new QueryParameter( parameters );
+		internal Request CreateRequest( string ViewURI, List<Filter> filters ) {
+			QueryParameter queryParameter = new QueryParameter( filters );
 			Request request = new Request( ViewURI, queryParameter );
 			return request;
 		}
 
 		internal List<Resource> ProcessResult( string result ) {
-			throw new NotImplementedException();
+			Console.WriteLine( result );
+			return new List<Resource>();
 		}
 	}
 }
