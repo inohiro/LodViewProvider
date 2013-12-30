@@ -11,18 +11,17 @@ namespace LodViewProvider {
 
 	public class QueryParameter {
 
-		public List<Filter> Filters { get; private set; }
+		public List<Condition> Conditions { get; private set; }
 
-		public QueryParameter() {
-			Filters = new List<Filter>();
-		}
+		public QueryParameter()
+			: this( new List<Condition>() ) { }
 
-		public QueryParameter( List<Filter> filters ) {
-			Filters = filters;
+		public QueryParameter( List<Condition> conditions ) {
+			Conditions = conditions;
 		}
 
 		public string CreateQueryString () {
-			string serializedFilters = JsonConvert.SerializeObject( Filters );
+			string serializedFilters = JsonConvert.SerializeObject( Conditions );
 			string encodedQuery = HttpUtility.UrlEncode( serializedFilters );
 			// TODO: Consider empty query string
 			return String.Format( "query={0}", encodedQuery );

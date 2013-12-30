@@ -47,6 +47,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AggregateFunctionFinder.cs" />
+    <Compile Include="Condition.cs" />
+    <Compile Include="Aggregation.cs" />
     <Compile Include="ExpressionTreeModifier.cs" />
     <Compile Include="ExpressionTreeVisitor.cs" />
     <Compile Include="Filter.cs" />

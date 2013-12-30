@@ -12,64 +12,34 @@ namespace ProviderApp {
 			string viewUrl = "http://lodviewwebapp.herokuapp.com/test/1/";
 			var context = new LodViewContext( viewUrl ).Resource;
 
-			// var values = context.Select( e => e.Values["name"] == "inohiro" );
 			var values = from resource in context
-// 						 from resouce2 in context2
-						 where resource.Values["names"] == "inohiro" //  && resouce2.Values["names"]
+						 where resource.Values["names"] == "inohiro"
 						 select resource;
 
 			var values2 = context.Where( r => r.Values["name"] == "inohiro" );
+			var values3 = context.Max( e => e.Values["age"] );
 
-			// var expression = context.Expression;
+			// var avg = context.Average()
+			// var min = context.Min()
+			// var max = context.Max()
+			// var count = context.Count()
+			// var sum = context.Sum
 
-			foreach ( var v in values2 ) {
+
+			// var distinct = context.Distinct()
+
+			foreach ( var v in values3 ) {
 				Console.WriteLine( v );
 			}
 
 			Console.ReadKey();
-		}
 
-		/*
-		 * Aggregate Functions
-		 * セレクティびてぃの異なるクエリを幾つか実行してみる
-		 * 　　LINQで処理する，APIで処理する，SPARQL Endpoint で処理する
-		 * コスト式を考える
-		 */
-
-		static void Image () {
-
-			/* example.json
-
-			"People": [
-			  "Person1": {
-			    "name": "Hiroyuki Inoue",
-			    "age": "24",
-			    "status": "student",
-			  },
-			  "Person2": { ... },
-			]
-			*/
 			/*
-
-			string viewLod = @"domain.net/person_view";
-			var provider = new ViewedLod( viewUrl );
-
-			var names = provider.Select( "Name" );
-			foreach( var name in names ) {
-				Console.WriteLine( name );
-			}
-
-			var young = provider.Where( person => person["Age"] <= "40" );
-			foreach( var person in young ) {
-				Console.WriteLine( person );
-			}
-
-			var students = provider.Where( person => person["status"] == "student" );
-			foreach( var student in students ) {
-				Console.WriteLine( student );
-			}
-
-			*/
+			 * var max = context.Max( e => e["age"] );
+			 * var min = context.Max( e => e["age"] );
+			 * var avg = context.Average( e => e["age"] );
+			 * var count = context.Count( e => e["name"] == "inohiro" );
+			 */
 		}
 	}
 }

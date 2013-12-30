@@ -39,9 +39,9 @@ namespace LodViewProvider {
 		public virtual object Execute<T>( Expression expression, bool isEnumerable ) {
 			// var requestProcessor = createRequestProcessor( expression );
 			var requestProcessor = new RequestProcessor();
-			var filters = getRequestParameters( expression, requestProcessor );
+			var conditions = getRequestParameters( expression, requestProcessor );
 
-			Request request = requestProcessor.CreateRequest( ViewURI, filters );
+			Request request = requestProcessor.CreateRequest( ViewURI, conditions );
 			string result = LodViewExecute.RequestToLod( request, requestProcessor );
 
 			// var queryableList = requestProcessor.ProcessResult( result );
@@ -57,8 +57,8 @@ namespace LodViewProvider {
 			return queryableResources.Provider.Execute( newExpressionTree );
 		}
 
-		private List<Filter> getRequestParameters( Expression expression, RequestProcessor requestProcessor ) {
-			var filters = new List<Filter>();
+		private List<Condition> getRequestParameters( Expression expression, RequestProcessor requestProcessor ) {
+			var conditions = new List<Condition>();
 
 			var whereExpressions = new WhereClauseFinder().GetAllWheres( expression );
 			foreach ( var whereExpression in whereExpressions ) {
@@ -66,20 +66,24 @@ namespace LodViewProvider {
 				lambdaExpression = ( LambdaExpression ) Evaluator.PartialEval( lambdaExpression );
 
 				var filter = requestProcessor.GetParameters( lambdaExpression );
-				filters.Add( filter );
+				conditions.Add( filter );
 			}
 
 			// TODO: Aggregate Function { 'sum', 'avg', 'count', 'min', 'max' }
 			// http://www.w3.org/TR/sparql11-query/#sparqlAlgebra
-			//
-			// var aggFunctions = AggregateFunctionFinder().GetAllFunctions( expression );
-			// foreach( var aggFunc in aggFunctions ) {
-			//   var lambdaExpression = ~~
-			//   var filter = requestProcessor.GetAggregationParameters( lambdaExpression );
-			//   filters << filter
-			//
 
-			return filters;
+			// set method type by myself like : where, aggregation, ...
+
+			var aggFunctions = new AggregateFunctionFinder().GetAllAggFunctions( expression );
+			foreach( var aggFunction in aggFunctions ) {
+				var lambdaExpression = ( LambdaExpression ) ( ( UnaryExpression) ( aggFunction.Arguments[1] ) ).Operand;
+				lambdaExpression = ( LambdaExpression ) Evaluator.PartialEval( lambdaExpression );
+
+				var aggregation = requestProcessor.GetParameters( lambdaExpression );
+				conditions.Add( aggregation );
+			}
+
+			return conditions;
 		}
 	}
 }

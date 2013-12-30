@@ -15,8 +15,10 @@ namespace LodViewProvider {
 		/// Set of condition
 		/// </summary>
 		public Filter GetParameters( LambdaExpression lambdaExpression ) {
-			var parameters = new Dictionary<string, string>();
 			BinaryExpression binExp = null;
+
+			var unary = lambdaExpression.Body as MethodCallExpression;
+
 
 			try {
 				binExp = lambdaExpression.Body as BinaryExpression;
@@ -25,7 +27,15 @@ namespace LodViewProvider {
 				throw icxp;
 			}
 
-			var left = binExp.Left as MethodCallExpression;
+			MethodCallExpression left = null;
+
+			try {
+				left = binExp.Left as MethodCallExpression;
+			}
+			catch ( InvalidCastException icex ) {
+				throw icex;
+			}
+
 			string leftValue = left.Arguments[0].ToString();
 			string rightValue = binExp.Right.ToString();
 			string oper = detectOperator( binExp.NodeType );
@@ -65,8 +75,8 @@ namespace LodViewProvider {
 		/// </summary>
 		public string Result { get; set; }
 
-		internal Request CreateRequest( string ViewURI, List<Filter> filters ) {
-			QueryParameter queryParameter = new QueryParameter( filters );
+		internal Request CreateRequest( string ViewURI, List<Condition> conditions ) {
+			QueryParameter queryParameter = new QueryParameter( conditions );
 			Request request = new Request( ViewURI, queryParameter );
 			return request;
 		}

@@ -23,13 +23,14 @@ namespace LodViewProvider {
 			try {
 				// TODO: Check Full URL
 				string fullUrl = request.FullURL();
-				Stream stream = client.OpenRead( fullUrl );
+				using ( Stream stream = client.OpenRead( fullUrl ) ) {
+					StreamReader streamReader = new StreamReader( stream );
+					response = streamReader.ReadToEnd();
+				}
 
 				// TODO: Consider Async Access
 				// client.OpenReadAsync( new Uri( request.FullURL()));
 
-				StreamReader streamReader = new StreamReader( stream );
-				response = streamReader.ReadToEnd();
 			}
 			catch ( WebException webex ) {
 				// TODO: Logger.log( webex );
