@@ -29,11 +29,14 @@ namespace LodViewProvider {
 		}
 
 		internal LodViewExecute LodViewExecutor { get; private set; }
-		public LodViewQueryable LodView() {
-			return new LodViewQueryable( this, ViewURI );
+
+		public LodViewQueryable<Resource> Resource {
+			get {
+				return new LodViewQueryable<Resource>( this, ViewURI );
+			}
 		}
 
-		public virtual object Execute( Expression expression, bool isEnumerable ) {
+		public virtual object Execute<T>( Expression expression, bool isEnumerable ) {
 			// var requestProcessor = createRequestProcessor( expression );
 			var requestProcessor = new RequestProcessor();
 			var parameters = getRequestParameters( expression, requestProcessor );
@@ -54,20 +57,22 @@ namespace LodViewProvider {
 			return queryableResources.Provider.Execute( newExpressionTree );
 		}
 
+		// private List<Filter> getRequestParameters( Expression expression, RequestProcessor requestProcessor ) {
 		private Dictionary<string, string> getRequestParameters( Expression expression, RequestProcessor requestProcessor ) {
 			var parameters = new Dictionary<string, string>();
+			var filters = new List<Filter>();
 
 			var whereExpressions = new WhereClauseFinder().GetAllWheres( expression );
 			foreach ( var whereExpression in whereExpressions ) {
 				var lambdaExpression = ( LambdaExpression ) ( ( UnaryExpression ) ( whereExpression.Arguments[1] ) ).Operand;
 				lambdaExpression = ( LambdaExpression ) Evaluator.PartialEval( lambdaExpression );
 
-				var newParameters = requestProcessor.GetParameters( lambdaExpression );
-				foreach ( var newParameter in newParameters ) {
-					if ( !parameters.ContainsKey( newParameter.Key ) ) {
-						parameters.Add( newParameter.Key, newParameter.Value );
-					}
-				}
+				var filter = requestProcessor.GetParameters( lambdaExpression );
+				//foreach ( var newParameter in newParameters ) {
+				//    if ( !parameters.ContainsKey( newParameter.Key ) ) {
+				//        parameters.Add( newParameter.Key, newParameter.Value );
+				//    }
+				// }
 			}
 
 			return parameters;

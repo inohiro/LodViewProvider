@@ -15,14 +15,15 @@ namespace LodViewProvider {
 		public LodViewContext Context { get; set; }
 
 		public IQueryable<TElement> CreateQuery<TElement>( Expression expression ) {
-			return ( IQueryable<TElement> ) new LodViewQueryable( this, expression );
+			// return ( IQueryable<TElement> ) new LodViewQueryable( this, expression );
+			return new LodViewQueryable<TElement>( this, expression );
 		}
 
 		public IQueryable CreateQuery( Expression expression ) {
 			Type elementType = TypeSystem.GetElementType( expression.Type );
 			try {
-				return ( IQueryable ) Activator.CreateInstance(
-					typeof( LodViewQueryable ).MakeGenericType( elementType ),
+				return( IQueryable) Activator.CreateInstance( 
+					typeof( LodViewQueryable<>).MakeGenericType( elementType ),
 					new object[] { this, expression } );
 			}
 			catch ( Exception ex ) {
@@ -31,7 +32,7 @@ namespace LodViewProvider {
 		}
 
 		public TResult Execute<TResult>( Expression expression ) {
-			bool isEnumerable = typeof( TResult ).Name == "IEnumerable `1" || typeof( TResult ).Name == "IEnumerable";
+			bool isEnumerable = typeof( TResult ).Name == "IEnumerable`1" || typeof( TResult ).Name == "IEnumerable";
 			Type resultType = new MethodCallExpressionTypeFinder().GetGenericType( expression );
 			var genericArguments = new[] { resultType };
 

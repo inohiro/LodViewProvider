@@ -49,6 +49,7 @@
   <ItemGroup>
     <Compile Include="ExpressionTreeModifier.cs" />
     <Compile Include="ExpressionTreeVisitor.cs" />
+    <Compile Include="Filter.cs" />
     <Compile Include="InnermostWhereFinder.cs" />
     <Compile Include="InvalidQueryException.cs" />
     <Compile Include="LinqToTwitter\Evaluator.cs" />

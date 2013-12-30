@@ -24,6 +24,7 @@ namespace LodViewProvider {
 		public string QueryString () {
 			string serializedFilters = JsonConvert.SerializeObject( Filters );
 			string encodedQuery = HttpUtility.UrlEncode( serializedFilters );
+			// TODO: Consider empty query string
 			return String.Format( "query={0}", serializedFilters );
 		}
 	}

@@ -11,7 +11,7 @@ namespace LodViewProvider {
 	/// <summary>
 	/// Object which is queried
 	/// </summary>
-	public class LodViewQueryable : IQueryable<Resource> { // IOrderedQueryable<Resource> {
+	public class LodViewQueryable<T> : IQueryable<T> { // IOrderedQueryable<Resource> {
 
 		public string ViewUrl { get; private set; }
 		public IQueryProvider Provider { get; private set; }
@@ -30,8 +30,8 @@ namespace LodViewProvider {
 			Expression = expression;
 		}
 
-		public IEnumerator<Resource> GetEnumerator() {
-			return Provider.Execute<IEnumerable<Resource>>( Expression ).GetEnumerator();
+		public IEnumerator<T> GetEnumerator() {
+			return Provider.Execute<IEnumerable<T>>( Expression ).GetEnumerator();
 		}
 
 		IEnumerator IEnumerable.GetEnumerator() {

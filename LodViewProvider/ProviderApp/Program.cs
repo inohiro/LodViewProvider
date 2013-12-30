@@ -10,14 +10,22 @@ namespace ProviderApp {
 		static void Main( string[] args ) {
 			Console.WriteLine( "Hello, World" );
 
-			var context = new LodViewContext( "" ).LodView();
+			// var context = new LodViewContext( "" ).LodView();
+			var context = new LodViewContext( "" ).Resource;
 
-			var values = context.Select( e => e );
+			// var values = context.Select( e => e.Values["name"] == "inohiro" );
+			var values = from resource in context
+						 where resource.Values["names"] == "inohiro"
+						 select resource;
+
+			var values2 = context.Where( r => r.Values["name"] == "inohiro" );
+
 			// var expression = context.Expression;
 
-			foreach ( var v in values ) {
+			foreach ( var v in values2 ) {
 				Console.WriteLine( v );
 			}
+
 			Console.ReadKey();
 		}
 

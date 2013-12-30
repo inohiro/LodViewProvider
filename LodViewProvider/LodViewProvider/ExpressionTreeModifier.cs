@@ -23,6 +23,13 @@ namespace LodViewProvider {
 		//    }
 		//}
 
+		protected override Expression VisitConstant( ConstantExpression c ) {
+			if ( c.Type.Name == "LodViewQueryable`1" ) {
+				return Expression.Constant( queryableResources );
+			}
+			return c;
+		}
+
 		internal Expression CopyAndModify( Expression expression ) {
 			return Visit( expression );
 		}
