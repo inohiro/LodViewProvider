@@ -25,7 +25,6 @@ namespace LodViewProvider {
 
 		public LodViewContext( string viewUri, LodViewExecute executor ) {
 			ViewURI = viewUri;
-			// LodViewExecutor = executor;
 		}
 
 		internal LodViewExecute LodViewExecutor { get; private set; }
@@ -37,16 +36,13 @@ namespace LodViewProvider {
 		}
 
 		public virtual object Execute<T>( Expression expression, bool isEnumerable ) {
-			// var requestProcessor = createRequestProcessor( expression );
 			var requestProcessor = new RequestProcessor();
 			var conditions = getRequestParameters( expression, requestProcessor );
 
 			Request request = requestProcessor.CreateRequest( ViewURI, conditions );
 			string result = LodViewExecute.RequestToLod( request, requestProcessor );
 
-			// var queryableList = requestProcessor.ProcessResult( result );
 			var queryableResources = requestProcessor.ProcessResult( result ).AsQueryable();
-
 			var treeCopier = new ExpressionTreeModifier( queryableResources );
 			Expression newExpressionTree = treeCopier.CopyAndModify( expression );
 
@@ -57,29 +53,32 @@ namespace LodViewProvider {
 			return queryableResources.Provider.Execute( newExpressionTree );
 		}
 
-		private List<Condition> getRequestParameters( Expression expression, RequestProcessor requestProcessor ) {
-			var conditions = new List<Condition>();
+		private List<ICondition> getRequestParameters( Expression expression, RequestProcessor requestProcessor ) {
+			var conditions = new List<ICondition>();
+
+			//
+			// 'Where' Expression
+			//
 
 			var whereExpressions = new WhereClauseFinder().GetAllWheres( expression );
 			foreach ( var whereExpression in whereExpressions ) {
 				var lambdaExpression = ( LambdaExpression ) ( ( UnaryExpression ) ( whereExpression.Arguments[1] ) ).Operand;
 				lambdaExpression = ( LambdaExpression ) Evaluator.PartialEval( lambdaExpression );
 
-				var filter = requestProcessor.GetParameters( lambdaExpression );
+				var filter = requestProcessor.GetParameters( lambdaExpression, TargetMethodType.Selection );
 				conditions.Add( filter );
 			}
 
-			// TODO: Aggregate Function { 'sum', 'avg', 'count', 'min', 'max' }
-			// http://www.w3.org/TR/sparql11-query/#sparqlAlgebra
+			//
+			// Aggregation Expressions
+			//
 
-			// set method type by myself like : where, aggregation, ...
-
-			var aggFunctions = new AggregateFunctionFinder().GetAllAggFunctions( expression );
-			foreach( var aggFunction in aggFunctions ) {
-				var lambdaExpression = ( LambdaExpression ) ( ( UnaryExpression) ( aggFunction.Arguments[1] ) ).Operand;
+			var aggFunctions = new AggregateFunctionFinder().GetAllTarget( expression );
+			foreach( Tuple<MethodCallExpression, AggregationType> aggFunction in aggFunctions ) {
+				var lambdaExpression = ( LambdaExpression ) ( ( UnaryExpression) ( aggFunction.Item1.Arguments[1] ) ).Operand;
 				lambdaExpression = ( LambdaExpression ) Evaluator.PartialEval( lambdaExpression );
 
-				var aggregation = requestProcessor.GetParameters( lambdaExpression );
+				var aggregation = requestProcessor.GetParameters( lambdaExpression, TargetMethodType.Aggregation, aggFunction.Item2 );
 				conditions.Add( aggregation );
 			}
 

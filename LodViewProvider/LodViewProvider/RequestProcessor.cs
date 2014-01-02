@@ -6,41 +6,60 @@ using System.Linq.Expressions;
 
 namespace LodViewProvider {
 
+	public enum TargetMethodType {
+		Selection,
+		Aggregation
+	}
+
 	public class RequestProcessor {
 
 		public RequestProcessor() {
 		}
 		
-		/// <summary>
-		/// Set of condition
-		/// </summary>
-		public Filter GetParameters( LambdaExpression lambdaExpression ) {
+		public ICondition GetParameters( LambdaExpression lambdaExpression, TargetMethodType methodType, AggregationType aggType = AggregationType.Min ) {
+			ICondition condition = null;
+
+			switch ( methodType ) {
+				case TargetMethodType.Selection: {
+					condition = createFilterForSelection( lambdaExpression );
+				} break;
+				case TargetMethodType.Aggregation: {
+					condition = createAggregationForAggregationFunction( lambdaExpression, aggType );
+				} break;
+			}
+
+			return condition;
+		}
+
+		private Filter createFilterForSelection( LambdaExpression lambdaExpression ) {
 			BinaryExpression binExp = null;
-
-			var unary = lambdaExpression.Body as MethodCallExpression;
-
 
 			try {
 				binExp = lambdaExpression.Body as BinaryExpression;
-			}
-			catch ( InvalidCastException icxp ) {
-				throw icxp;
-			}
-
-			MethodCallExpression left = null;
-
-			try {
-				left = binExp.Left as MethodCallExpression;
 			}
 			catch ( InvalidCastException icex ) {
 				throw icex;
 			}
 
+			var left = binExp.Left as MethodCallExpression;
 			string leftValue = left.Arguments[0].ToString();
 			string rightValue = binExp.Right.ToString();
 			string oper = detectOperator( binExp.NodeType );
 
 			return new Filter( leftValue, rightValue, oper );
+		}
+
+		private Aggregation createAggregationForAggregationFunction( LambdaExpression lambdaExpression, AggregationType aggType ) {
+			MethodCallExpression mCallExp = null;
+
+			try {
+				mCallExp = lambdaExpression.Body as MethodCallExpression;
+			}
+			catch ( InvalidCastException icex ) {
+				throw icex;
+			}
+
+			return new Aggregation( mCallExp.Arguments[0].ToString(), aggType );
 		}
 
 		private string detectOperator( ExpressionType expressionType ) {
@@ -70,12 +89,9 @@ namespace LodViewProvider {
 
 		public string QueryString { get; set; }
 
-		/// <summary>
-		/// Result
-		/// </summary>
 		public string Result { get; set; }
 
-		internal Request CreateRequest( string ViewURI, List<Condition> conditions ) {
+		internal Request CreateRequest( string ViewURI, List<ICondition> conditions ) {
 			QueryParameter queryParameter = new QueryParameter( conditions );
 			Request request = new Request( ViewURI, queryParameter );
 			return request;

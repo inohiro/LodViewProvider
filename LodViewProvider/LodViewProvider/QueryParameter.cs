@@ -11,12 +11,12 @@ namespace LodViewProvider {
 
 	public class QueryParameter {
 
-		public List<Condition> Conditions { get; private set; }
+		public List<ICondition> Conditions { get; private set; }
 
 		public QueryParameter()
-			: this( new List<Condition>() ) { }
+			: this( new List<ICondition>() ) { }
 
-		public QueryParameter( List<Condition> conditions ) {
+		public QueryParameter( List<ICondition> conditions ) {
 			Conditions = conditions;
 		}
 

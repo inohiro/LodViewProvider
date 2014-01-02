@@ -16,8 +16,10 @@ namespace ProviderApp {
 						 where resource.Values["names"] == "inohiro"
 						 select resource;
 
-			var values2 = context.Where( r => r.Values["name"] == "inohiro" );
+			// var values2 = context.Where( r => r.Values["name"] == "inohiro" );
 			var values3 = context.Max( e => e.Values["age"] );
+
+			var distinctedNames = context.Select( e => e.Values["name"] == "inohiro" ).Distinct();
 
 			// var avg = context.Average()
 			// var min = context.Min()
@@ -25,10 +27,9 @@ namespace ProviderApp {
 			// var count = context.Count()
 			// var sum = context.Sum
 
-
 			// var distinct = context.Distinct()
 
-			foreach ( var v in values3 ) {
+			foreach ( var v in values ) {
 				Console.WriteLine( v );
 			}
 
@@ -40,6 +41,7 @@ namespace ProviderApp {
 			 * var avg = context.Average( e => e["age"] );
 			 * var count = context.Count( e => e["name"] == "inohiro" );
 			 */
+
 		}
 	}
 }

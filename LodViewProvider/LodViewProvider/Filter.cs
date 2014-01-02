@@ -13,8 +13,11 @@ namespace LodViewProvider {
 		Normal
 	}
 
-	public class Filter : Condition {
+	public class Filter : ICondition {
 
+		public string Left { get; private set; }
+		public string Right { get; private set; }
+		public string Operator { get; private set; }
 		public FilterType FilterType { get; private set; }
 
 		public Filter( string left, string right, string oper )

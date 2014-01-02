@@ -6,13 +6,16 @@ using System.Text;
 namespace LodViewProvider {
 
 	public enum AggregationType {
-		Average,
-		Count,
-		Max,
-		Min
+		Min = 0,
+		Max = 1,
+		Sum = 2,
+		Count = 3,
+		Average = 4,
+		// group by
+		// order by
 	}
 
-	public class Aggregation : Condition {
+	public class Aggregation : ICondition	{
 
 		public string Variable { get; private set; }
 		public AggregationType AggregationType { get; private set; }
@@ -45,7 +48,6 @@ namespace LodViewProvider {
 
 			return strBuild.ToString();
 		}
-
 	}
 
 	public class InvalidAggregationTypeException : Exception {
