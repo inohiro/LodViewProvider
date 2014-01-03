@@ -7,13 +7,10 @@ using System.Text;
 namespace LodViewProvider {
 
 	public enum FilterType {
-		Regex,     // Not supported yet (http://stackoverflow.com/questions/17711822/linq-regex-for-whole-word-search )
-		Exists,    // Not supported yet
-		NotExists, // Not supported yet
-		Normal,
-		SingleSelection,
-		MultipleSelection,
-		All
+		Regex     = 0, // Not supported yet (http://stackoverflow.com/questions/17711822/linq-regex-for-whole-word-search )
+		Exists    = 1, // Not supported yet
+		NotExists = 2, // Not supported yet
+		Normal    = 3,
 	}
 
 	public class Filter : IRequestable {

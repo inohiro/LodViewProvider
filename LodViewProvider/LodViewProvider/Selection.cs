@@ -5,18 +5,24 @@ using System.Text;
 
 namespace LodViewProvider {
 
+	public enum SelectionType {
+		Single = 0,
+		Multiple = 1,
+		All = 2
+	}
+
 	public class SingleSelection : IRequestable {
 
 		public string Variable { get; private set; }
 		public string Condition { get; private set; }
 		public string Operator { get; private set; }
-		public FilterType FilterType { get; private set; }
+		public SelectionType SelectionType { get; private set; }
 
 		public SingleSelection( string variable, string condition = "", string oper = "" ) {
 			Variable = variable.Trim( '\"' );
 			Condition = condition.Trim( '\"' );
 			Operator = oper;
-			FilterType = LodViewProvider.FilterType.SingleSelection;
+			SelectionType = LodViewProvider.SelectionType.Single;
 		}
 
 		public override string ToString() {
@@ -32,7 +38,7 @@ namespace LodViewProvider {
 	}
 
 	public class MultipleSelection : IRequestable	{
-		public FilterType FilterType { get; private set; }
+		public SelectionType SelectionType { get; private set; }
 		public List<SingleSelection> Variables { get; private set; }
 
 		public MultipleSelection()
@@ -40,7 +46,7 @@ namespace LodViewProvider {
 
 		public MultipleSelection( List<SingleSelection> variables ) {
 			Variables = variables;
-			FilterType = LodViewProvider.FilterType.MultipleSelection;
+			SelectionType = LodViewProvider.SelectionType.Multiple;
 		}
 
 		public override string ToString() {
@@ -51,9 +57,9 @@ namespace LodViewProvider {
 	}
 
 	public class All : IRequestable {
-		public FilterType FilterType { get; private set; }
+		public SelectionType SelectionType { get; private set; }
 		public All() {
-			FilterType = LodViewProvider.FilterType.All;
+			SelectionType = LodViewProvider.SelectionType.All;
 		}
 	}
 }
