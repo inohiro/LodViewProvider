@@ -100,10 +100,10 @@ namespace LodViewProvider {
 
 		private SingleSelection createSingleSelectionFunctionFromBinaryExpression( LambdaExpression lambdaExpression ) {
 			var tuple = castBinaryExpression( lambdaExpression );
-			return new SingleSelection( tuple.Item1, tuple.Item2, tuple.Item3 );
+			return new SingleSelection( tuple.Item1, tuple.Item2, tuple.Item4 );
 		}
 
-		private Tuple<string, string, string> castBinaryExpression( LambdaExpression lambdaExpression ) {
+		private Tuple<string, string, string, string> castBinaryExpression( LambdaExpression lambdaExpression ) {
 			BinaryExpression binExp = null;
 			MethodCallExpression mCallExp = null;
 			string variable = null;
@@ -124,9 +124,10 @@ namespace LodViewProvider {
 			}
 
 			var left = binExp.Left as MethodCallExpression;
-			Tuple<string, string, string> conditionTuple = new Tuple<string, string, string>(
+			Tuple<string, string, string, string> conditionTuple = new Tuple<string, string, string, string>(
 				variable,
 				binExp.Right.ToString(),
+				binExp.Right.Type.ToString(),
 				detectOperator( binExp.NodeType ) );
 
 			return conditionTuple;
@@ -139,7 +140,7 @@ namespace LodViewProvider {
 
 		private Filter createFilterForSelection( LambdaExpression lambdaExpression ) {
 			var tuple = castBinaryExpression( lambdaExpression );
-			return new Filter( tuple.Item1, tuple.Item2, tuple.Item3 );
+			return new Filter( tuple.Item1, tuple.Item2, tuple.Item4, FilterType.Normal, tuple.Item3 );
 		}
 
 		private Aggregation createAggregationForAggregationFunction( LambdaExpression lambdaExpression, AggregationType aggType ) {

@@ -19,15 +19,17 @@ namespace LodViewProvider {
 		public string Right { get; private set; }
 		public string Operator { get; private set; }
 		public FilterType FilterType { get; private set; }
+		public string ConditionType { get; private set; }
 
-		public Filter( string left, string right, string oper )
-			: this( left, right, oper, FilterType.Normal ) {}
+		public Filter( string left, string right, string oper)
+			: this( left, right, oper, FilterType.Normal, "string" ) {}
 
-		public Filter( string left, string right, string oper, FilterType filterType ) {
+		public Filter( string left, string right, string oper, FilterType filterType, string conditionType ) {
 			Left = left.Trim( '\"' );
 			Right = right.Trim( '\"' );
 			Operator = oper;
 			FilterType = filterType;
+			ConditionType = conditionType;
 		}
 
 		public override string ToString() {
