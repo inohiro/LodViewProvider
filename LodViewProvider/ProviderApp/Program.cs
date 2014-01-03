@@ -20,9 +20,13 @@ namespace ProviderApp {
 
 			#region Selection
 
+			var all = from resource in context select resource;
+			// var allresult = all.ToArray();
+
 			var values = from resource in context
 						 where resource.Values["names"] == "inohiro"
 						 select resource;
+			var valuesresult = values.ToArray();
 
 			var values1 = context.Select( e => e.Values["name"] );
 			// var result1 = values1.ToArray();

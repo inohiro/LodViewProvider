@@ -32,6 +32,9 @@ namespace LodViewProvider {
 						case ExpressionType.Call: {
 							condition = createSingleSelectionFunction( lambdaExpression ); // Select a variable
 						}break;
+						case ExpressionType.Parameter: {
+							condition = new All(); // Select all with no condition
+						}break;
 						default: {
 							condition = createSingleSelectionFunctionFromBinaryExpression( lambdaExpression ); // Select a variable with condition
 						} break;

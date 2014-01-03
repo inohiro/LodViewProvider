@@ -12,7 +12,8 @@ namespace LodViewProvider {
 		NotExists, // Not supported yet
 		Normal,
 		SingleSelection,
-		MultipleSelection
+		MultipleSelection,
+		All
 	}
 
 	public class Filter : IRequestable {
