@@ -21,7 +21,7 @@ namespace LodViewProvider {
 		public AggregationType AggregationType { get; private set; }
 
 		public Aggregation( string variable, AggregationType aggregationType ) {
-			Variable = variable;
+			Variable = variable.Trim( '\"' );
 			AggregationType = aggregationType;
 		}
 
