@@ -24,13 +24,16 @@ namespace LodViewProvider {
 				case TargetMethodType.Projection: {
 					switch ( lambdaExpression.Body.NodeType ) {
 						case ExpressionType.Equal: {
-							condition = createProjectionFunction( lambdaExpression ); // Select a variable
+							condition = createSingleSelectionFunctionFromBinaryExpression( lambdaExpression ); // Select a variable with condition
 						} break;
 						case ExpressionType.New: {
-							condition = createManyProjectionFunction( lambdaExpression ); // Select many variables
+							condition = createMultipleSelectionFunction( lambdaExpression ); // Select many variables
+						} break;
+						case ExpressionType.Call: {
+							condition = createSingleSelectionFunction( lambdaExpression ); // Select a variable
 						}break;
 						default: {
-							condition = createProjectionFunction( lambdaExpression ); // Select a variable
+							condition = createSingleSelectionFunctionFromBinaryExpression( lambdaExpression ); // Select a variable with condition
 						} break;
 					}
 				}break;
@@ -52,7 +55,7 @@ namespace LodViewProvider {
 			return condition;
 		}
 
-		private IRequestable createManyProjectionFunction( LambdaExpression lambdaExpression ) {
+		private MultipleSelection createMultipleSelectionFunction( LambdaExpression lambdaExpression ) {
 			NewExpression newExp = null;
 
 			try {
@@ -71,7 +74,20 @@ namespace LodViewProvider {
 			return new MultipleSelection( singleSelections );
 		}
 
-		private SingleSelection createProjectionFunction( LambdaExpression lambdaExpression ) {
+		private SingleSelection createSingleSelectionFunction( LambdaExpression lambdaExpression ) {
+			MethodCallExpression mCallExp = null;
+
+			try {
+				mCallExp = lambdaExpression.Body as MethodCallExpression;
+			}
+			catch ( InvalidCastException icex ) {
+				throw icex;
+			}
+
+			return new SingleSelection( mCallExp.Arguments[0].ToString() );
+		}
+
+		private SingleSelection createSingleSelectionFunctionFromBinaryExpression( LambdaExpression lambdaExpression ) {
 			var tuple = castBinaryExpression( lambdaExpression );
 			return new SingleSelection( tuple.Item1, tuple.Item2, tuple.Item3 );
 		}

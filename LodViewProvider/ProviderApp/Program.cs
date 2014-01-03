@@ -22,27 +22,24 @@ namespace ProviderApp {
 						 where resource.Values["names"] == "inohiro"
 						 select resource;
 
-			var values2 = context.Select( e => e.Values["name"] == "inohiro" );
+			var values1 = context.Select( e => e.Values["name"] );
+			// var result1 = values1.ToArray();
 
-			//foreach ( var v in values2 ) {
-			//    Console.Write( v );
-			//}
+			var values2 = context.Select( e => e.Values["name"] == "inohiro" );
+			// var result2 = values2.ToArray();
 
 			var values3 = context.Select( e => new Tuple<string, string>( e.Values["strig"], e.Values["age"] ) );
+			// var result3 = values3.ToArray();
 
-			var arry = values3.ToArray();
+			var values4 = context
+				.Where( e => Int32.Parse( e.Values["age"] ) <= 30 )
+				.Select( e => new { Name = e.Values["name"], Age = e.Values["age"] } );
+			// var result4 = values4.ToArray();
 
-			 // var values4 = context.Select( e => new { e.Values["string"], e.Values["age"] } );
 			var values5 = from resource in context
 						  where Int32.Parse( resource.Values["age"] ) <= 30
-						  select resource;
-						  // select new { resource.Values["name"], resource.Values["age"] };
-
-			var result = values5.ToArray();
-
-			foreach ( var v in values3 ) {
-				Console.WriteLine( v.Item1, v.Item2 );
-			}
+						  select new { Name = resource.Values["name"], Age = resource.Values["age"] };
+			// var result5 = values5.ToArray();
 
 			/*
 			 * 
