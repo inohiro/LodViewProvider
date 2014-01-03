@@ -76,15 +76,23 @@ namespace LodViewProvider {
 
 		private SingleSelection createSingleSelectionFunction( LambdaExpression lambdaExpression ) {
 			MethodCallExpression mCallExp = null;
+			string variable = null;
 
 			try {
 				mCallExp = lambdaExpression.Body as MethodCallExpression;
+				variable = mCallExp.Arguments[0].ToString();
+				if ( mCallExp.NodeType == ExpressionType.Call ) {
+					var variableExpression = mCallExp.Arguments[0] as MethodCallExpression;
+					if ( variableExpression != null ) {
+						variable = variableExpression.Arguments[0].ToString();
+					}
+				}
 			}
 			catch ( InvalidCastException icex ) {
 				throw icex;
 			}
 
-			return new SingleSelection( mCallExp.Arguments[0].ToString() );
+			return new SingleSelection( variable );
 		}
 
 		private SingleSelection createSingleSelectionFunctionFromBinaryExpression( LambdaExpression lambdaExpression ) {
@@ -94,9 +102,19 @@ namespace LodViewProvider {
 
 		private Tuple<string, string, string> castBinaryExpression( LambdaExpression lambdaExpression ) {
 			BinaryExpression binExp = null;
+			MethodCallExpression mCallExp = null;
+			string variable = null;
 
 			try {
 				binExp = lambdaExpression.Body as BinaryExpression;
+				mCallExp = binExp.Left as MethodCallExpression;
+				variable = mCallExp.Arguments[0].ToString();
+				if ( mCallExp.NodeType == ExpressionType.Call ) {
+					var variableExpression = mCallExp.Arguments[0] as MethodCallExpression;
+					if ( variableExpression != null ) {
+						variable = variableExpression.Arguments[0].ToString();
+					}
+				}
 			}
 			catch ( InvalidCastException icex ) {
 				throw icex;
@@ -104,7 +122,7 @@ namespace LodViewProvider {
 
 			var left = binExp.Left as MethodCallExpression;
 			Tuple<string, string, string> conditionTuple = new Tuple<string, string, string>(
-				left.Arguments[0].ToString(),
+				variable,
 				binExp.Right.ToString(),
 				detectOperator( binExp.NodeType ) );
 
@@ -123,15 +141,23 @@ namespace LodViewProvider {
 
 		private Aggregation createAggregationForAggregationFunction( LambdaExpression lambdaExpression, AggregationType aggType ) {
 			MethodCallExpression mCallExp = null;
+			string variable = null;
 
 			try {
 				mCallExp = lambdaExpression.Body as MethodCallExpression;
+				variable = mCallExp.Arguments[0].ToString();
+				if ( mCallExp.NodeType == ExpressionType.Call ) {
+					var variableExpression = mCallExp.Arguments[0] as MethodCallExpression;
+					if ( variableExpression != null ) {
+						variable = variableExpression.Arguments[0].ToString();
+					}
+				}
 			}
 			catch ( InvalidCastException icex ) {
 				throw icex;
 			}
 
-			return new Aggregation( mCallExp.Arguments[0].ToString(), aggType );
+			return new Aggregation( variable, aggType );
 		}
 
 		private string detectOperator( ExpressionType expressionType ) {
