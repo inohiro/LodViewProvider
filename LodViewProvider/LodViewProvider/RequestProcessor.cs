@@ -8,6 +8,7 @@ namespace LodViewProvider {
 
 	public enum TargetMethodType {
 		Selection,
+		Projection,
 		Aggregation
 	}
 
@@ -16,22 +17,66 @@ namespace LodViewProvider {
 		public RequestProcessor() {
 		}
 		
-		public ICondition GetParameters( LambdaExpression lambdaExpression, TargetMethodType methodType, AggregationType aggType = AggregationType.Min ) {
-			ICondition condition = null;
+		public IRequestable GetParameters( LambdaExpression lambdaExpression, TargetMethodType methodType, AggregationType aggType = AggregationType.Min ) {
+			IRequestable condition = null;
 
 			switch ( methodType ) {
+				case TargetMethodType.Projection: {
+					switch ( lambdaExpression.Body.NodeType ) {
+						case ExpressionType.Equal: {
+							condition = createProjectionFunction( lambdaExpression ); // Select a variable
+						} break;
+						case ExpressionType.New: {
+							condition = createManyProjectionFunction( lambdaExpression ); // Select many variables
+						}break;
+						default: {
+							condition = createProjectionFunction( lambdaExpression ); // Select a variable
+						} break;
+					}
+				}break;
 				case TargetMethodType.Selection: {
 					condition = createFilterForSelection( lambdaExpression );
 				} break;
 				case TargetMethodType.Aggregation: {
-					condition = createAggregationForAggregationFunction( lambdaExpression, aggType );
+					switch ( aggType ) {
+						case AggregationType.Count: {
+							condition = createCountFunction( lambdaExpression );
+						} break;
+						default: {
+							condition = createAggregationForAggregationFunction( lambdaExpression, aggType );
+						} break;
+					}
 				} break;
 			}
 
 			return condition;
 		}
 
-		private Filter createFilterForSelection( LambdaExpression lambdaExpression ) {
+		private IRequestable createManyProjectionFunction( LambdaExpression lambdaExpression ) {
+			NewExpression newExp = null;
+
+			try {
+				newExp = lambdaExpression.Body as NewExpression;
+			}
+			catch ( InvalidCastException icex ) {
+				throw icex;
+			}
+
+			List<SingleSelection> singleSelections = new List<SingleSelection>();
+			foreach ( var arg in newExp.Arguments ) {
+				var mcall = arg as MethodCallExpression;
+				singleSelections.Add( new SingleSelection( mcall.Arguments[0].ToString() ) );
+			}
+
+			return new MultipleSelection( singleSelections );
+		}
+
+		private SingleSelection createProjectionFunction( LambdaExpression lambdaExpression ) {
+			var tuple = castBinaryExpression( lambdaExpression );
+			return new SingleSelection( tuple.Item1, tuple.Item2, tuple.Item3 );
+		}
+
+		private Tuple<string, string, string> castBinaryExpression( LambdaExpression lambdaExpression ) {
 			BinaryExpression binExp = null;
 
 			try {
@@ -42,11 +87,22 @@ namespace LodViewProvider {
 			}
 
 			var left = binExp.Left as MethodCallExpression;
-			string leftValue = left.Arguments[0].ToString();
-			string rightValue = binExp.Right.ToString();
-			string oper = detectOperator( binExp.NodeType );
+			Tuple<string, string, string> conditionTuple = new Tuple<string, string, string>(
+				left.Arguments[0].ToString(),
+				binExp.Right.ToString(),
+				detectOperator( binExp.NodeType ) );
 
-			return new Filter( leftValue, rightValue, oper );
+			return conditionTuple;
+		}
+
+		private Aggregation createCountFunction( LambdaExpression lambdaExpression ) {
+			var tuple = castBinaryExpression( lambdaExpression );
+			return new Aggregation( tuple.Item1, AggregationType.Count );
+		}
+
+		private Filter createFilterForSelection( LambdaExpression lambdaExpression ) {
+			var tuple = castBinaryExpression( lambdaExpression );
+			return new Filter( tuple.Item1, tuple.Item2, tuple.Item3 );
 		}
 
 		private Aggregation createAggregationForAggregationFunction( LambdaExpression lambdaExpression, AggregationType aggType ) {
@@ -79,10 +135,13 @@ namespace LodViewProvider {
 				} break;
 				case ExpressionType.LessThanOrEqual: {
 					oper = "<=";
+				} break;
+				case ExpressionType.NotEqual: {
+					oper = "!=";
 				}break;
 				default: {
 					throw new InvalidOperationException();
-				}break;
+				} break;
 			}
 			return oper;
 		}
@@ -91,7 +150,7 @@ namespace LodViewProvider {
 
 		public string Result { get; set; }
 
-		internal Request CreateRequest( string ViewURI, List<ICondition> conditions ) {
+		internal Request CreateRequest( string ViewURI, List<IRequestable> conditions ) {
 			QueryParameter queryParameter = new QueryParameter( conditions );
 			Request request = new Request( ViewURI, queryParameter );
 			return request;

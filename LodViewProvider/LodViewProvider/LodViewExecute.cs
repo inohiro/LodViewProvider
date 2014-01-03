@@ -22,7 +22,7 @@ namespace LodViewProvider {
 
 			try {
 				// TODO: Check Full URL
-string fullUrl = request.FullURL();
+				string fullUrl = request.FullURL();
 				using ( Stream stream = client.OpenRead( fullUrl ) ) {
 					StreamReader streamReader = new StreamReader( stream );
 					response = streamReader.ReadToEnd();

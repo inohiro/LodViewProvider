@@ -53,8 +53,21 @@ namespace LodViewProvider {
 			return queryableResources.Provider.Execute( newExpressionTree );
 		}
 
-		private List<ICondition> getRequestParameters( Expression expression, RequestProcessor requestProcessor ) {
-			var conditions = new List<ICondition>();
+		private List<IRequestable> getRequestParameters( Expression expression, RequestProcessor requestProcessor ) {
+			var conditions = new List<IRequestable>();
+
+			//
+			// 'Select' Expression
+			//
+
+			var selectExpressions = new SelectClauseFinder().GetAllSelections( expression );
+			foreach ( var selectExpression in selectExpressions ) {
+				var lambdaExpression = ( LambdaExpression ) ( ( UnaryExpression ) ( selectExpression.Arguments[1] ) ).Operand;
+				lambdaExpression = ( LambdaExpression ) Evaluator.PartialEval( lambdaExpression );
+
+				var selection = requestProcessor.GetParameters( lambdaExpression, TargetMethodType.Projection );
+				conditions.Add( selection );
+			}
 
 			//
 			// 'Where' Expression

@@ -10,10 +10,12 @@ namespace LodViewProvider {
 		Regex,     // Not supported yet (http://stackoverflow.com/questions/17711822/linq-regex-for-whole-word-search )
 		Exists,    // Not supported yet
 		NotExists, // Not supported yet
-		Normal
+		Normal,
+		SingleSelection,
+		MultipleSelection
 	}
 
-	public class Filter : ICondition {
+	public class Filter : IRequestable {
 
 		public string Left { get; private set; }
 		public string Right { get; private set; }

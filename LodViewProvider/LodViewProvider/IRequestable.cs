@@ -5,6 +5,6 @@ using System.Text;
 
 namespace LodViewProvider {
 
-	public interface ICondition {
+	public interface IRequestable {
 	}
 }

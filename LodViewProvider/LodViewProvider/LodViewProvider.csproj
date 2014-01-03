@@ -50,7 +50,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AggregateFunctionFinder.cs" />
-    <Compile Include="Condition.cs" />
+    <Compile Include="Selection.cs" />
+    <Compile Include="IRequestable.cs" />
     <Compile Include="Aggregation.cs" />
     <Compile Include="ExpressionTreeModifier.cs" />
     <Compile Include="ExpressionTreeVisitor.cs" />
@@ -65,6 +66,7 @@
     <Compile Include="Request.cs" />
     <Compile Include="RequestProcessor.cs" />
     <Compile Include="Resource.cs" />
+    <Compile Include="SelectClauseFinder.cs" />
     <Compile Include="TypeSystem.cs" />
     <Compile Include="LodViewQueryable.cs" />
     <Compile Include="LodViewExecute.cs" />

@@ -15,7 +15,7 @@ namespace LodViewProvider {
 		// order by
 	}
 
-	public class Aggregation : ICondition	{
+	public class Aggregation : IRequestable	{
 
 		public string Variable { get; private set; }
 		public AggregationType AggregationType { get; private set; }
