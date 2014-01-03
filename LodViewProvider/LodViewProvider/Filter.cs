@@ -15,8 +15,8 @@ namespace LodViewProvider {
 
 	public class Filter : IRequestable {
 
-		public string Left { get; private set; }
-		public string Right { get; private set; }
+		public string Variable { get; private set; }
+		public string Condition { get; private set; }
 		public string Operator { get; private set; }
 		public FilterType FilterType { get; private set; }
 		public string ConditionType { get; private set; }
@@ -25,8 +25,8 @@ namespace LodViewProvider {
 			: this( left, right, oper, FilterType.Normal, "string" ) {}
 
 		public Filter( string left, string right, string oper, FilterType filterType, string conditionType ) {
-			Left = left.Trim( '\"' );
-			Right = right.Trim( '\"' );
+			Variable = left.Trim( '\"' );
+			Condition = right.Trim( '\"' );
 			Operator = oper;
 			FilterType = filterType;
 			ConditionType = conditionType;
@@ -36,9 +36,9 @@ namespace LodViewProvider {
 			var str = new StringBuilder();
 			str.Append( "{" );
 			str.Append( String.Format( "type:{0},", FilterType.ToString() ) );
-			str.Append( String.Format( "var:{0},", Left ) );
+			str.Append( String.Format( "var:{0},", Variable ) );
 			str.Append( String.Format( "operator:{0},", Operator  ));
-			str.Append( String.Format( "condition:{0}", Right ) );
+			str.Append( String.Format( "condition:{0}", Condition ) );
 			str.Append( "}" );
 			return str.ToString();
 		}
