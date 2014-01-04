@@ -22,7 +22,7 @@ namespace LodViewProvider {
 		public string ConditionType { get; private set; }
 
 		public Filter( string left, string right, string oper)
-			: this( left, right, oper, FilterType.Normal, "string" ) {}
+			: this( left, right, oper, FilterType.Normal, "System.String" ) {}
 
 		public Filter( string left, string right, string oper, FilterType filterType, string conditionType ) {
 			Variable = left.Trim( '\"' );

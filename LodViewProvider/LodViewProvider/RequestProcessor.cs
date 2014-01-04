@@ -80,6 +80,7 @@ namespace LodViewProvider {
 		private SingleSelection createSingleSelectionFunction( LambdaExpression lambdaExpression ) {
 			MethodCallExpression mCallExp = null;
 			string variable = null;
+			string conditionType = "System.String";
 
 			try {
 				mCallExp = lambdaExpression.Body as MethodCallExpression;
@@ -100,7 +101,7 @@ namespace LodViewProvider {
 
 		private SingleSelection createSingleSelectionFunctionFromBinaryExpression( LambdaExpression lambdaExpression ) {
 			var tuple = castBinaryExpression( lambdaExpression );
-			return new SingleSelection( tuple.Item1, tuple.Item2, tuple.Item4 );
+			return new SingleSelection( tuple.Item1, tuple.Item2, tuple.Item4, tuple.Item3 );
 		}
 
 		private Tuple<string, string, string, string> castBinaryExpression( LambdaExpression lambdaExpression ) {
