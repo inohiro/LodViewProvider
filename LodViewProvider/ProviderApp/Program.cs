@@ -21,16 +21,64 @@ namespace ProviderApp {
 
 			var context = new LodViewContext( viewUrl ).Resource;
 			var dicontext = new LodViewContext( viewUrl ).Dictionary;
-
 			var jcontext = new LodViewContext( viewUrl ).JTokens;
 			var stringlistcont = new LodViewContext( viewUrl ).StringList;
+
+
+//			var groupby = from resouce in dicontext
+//						  group resouce by resouce["Affiliation"];
+			// var groupby = dicontext.GroupBy( e => e["Affiliation"] ).Where( e => e.Count() < 30 );
+			var gby = dicontext.Where( e => e["names"] == "inohiro" )
+				.Where( e => Int32.Parse( e["age"] ) <= 20 )
+				.GroupBy( e => e["Affiliation"] )
+				.Where( e => e.Count() < 30 );
+			// var gbresult = gby.ToList();
+
+
+			var ob = dicontext.OrderBy( e => e["age"].Count() );
+			var obresult = ob.ToList();
+			var wob = dicontext.Where( e => e["name"] == "inohiro" ).GroupBy( e => e["Affiliation"] );
+			// var wobresult = wob.ToArray();
+
+			var rob = dicontext.OrderByDescending( e => e["age"] );
+//			var orderby = from resource in dicontext
+//						  orderby Int32.Parse( resource["age"] )
+//						  select resource;
+			// var obresult = rob.ToList();
+
+			var gbob = dicontext.Where( e => e["name"] == "inohiro" )
+				.GroupBy( e => e["Affiliation"] )
+				.Where( e => e.Count() < 30 )
+				.OrderBy( e => e.Count() );
+			var gbobresult = gbob.ToList();
+
+			var obgb = dicontext.Where( e => e["name"] == "inohiro" )
+				.GroupBy( e => e["Affiliation"] )
+				.OrderBy( e => e.Count() );
+
+			// var avggb = dicontext.Average( e => Int32.Parse( e["age"] ) ); // we can not write following query?
+
+			// PREFIX : <http://books.example/>
+			// SELECT (SUM(?lprice) AS ?totalPrice)
+			// WHERE {
+			//   ?org :affiliates ?auth .
+			//   ?auth :writesBook ?book .
+			//   ?book :price ?lprice .
+			// }
+			// GROUP BY ?org
+			// HAVING (SUM(?lprice) > 10)
+
+			var hoge = dicontext.Average( e => Int32.Parse( e["price"] ) );
+			// var fuga = dicontext.GroupBy( e => e["org"]).Where( e => 
+
+
 
 			// var query = context.Select( e => e.Values["subject"] );
 			// var result = query.ToList();
 			// result.ForEach( e => Console.WriteLine( e ) );
 
 			var query = dicontext.Select( e => e["subject"] == "hoge" );
-			var hoge = query.ToArray();
+			// var hoge = query.ToArray(); // fine, but expressions are evaluated in double
 
 
 //			foreach ( var a in query ) {

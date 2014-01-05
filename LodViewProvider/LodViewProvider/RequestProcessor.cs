@@ -149,11 +149,19 @@ namespace LodViewProvider {
 		private Aggregation createAggregationForAggregationFunction( LambdaExpression lambdaExpression, AggregationType aggType ) {
 			MethodCallExpression mCallExp = null;
 			string variable = null;
+			string orderByInnerMethod = "";
 
 			try {
 				mCallExp = lambdaExpression.Body as MethodCallExpression;
 				variable = mCallExp.Arguments[0].ToString();
-				if ( mCallExp.NodeType == ExpressionType.Call ) {
+
+				if ( aggType == AggregationType.OrderBy || aggType == AggregationType.OrderByDescending ) {
+					if ( mCallExp.Method.Name == "Count" ) {
+						orderByInnerMethod = "Count";
+					}
+				}
+
+				if ( mCallExp.NodeType == ExpressionType.Call ) { // mCallExp.Method.Name == Count, Max, Min
 					var variableExpression = mCallExp.Arguments[0] as MethodCallExpression;
 					if ( variableExpression != null ) {
 						variable = variableExpression.Arguments[0].ToString();
@@ -164,7 +172,12 @@ namespace LodViewProvider {
 				throw icex;
 			}
 
-			return new Aggregation( variable, aggType );
+			if ( orderByInnerMethod != "" ) {
+				return new Aggregation( variable, aggType, orderByInnerMethod );
+			}
+			else {
+				return new Aggregation( variable, aggType );
+			}
 		}
 
 		private string detectOperator( ExpressionType expressionType ) {

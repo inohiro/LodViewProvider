@@ -11,7 +11,8 @@ namespace LodViewProvider {
 	/// <summary>
 	/// Object which is queried
 	/// </summary>
-	public class LodViewQueryable<T> : IQueryable<T> { // , IEqualityComparer<T> { // IOrderedQueryable<Resource> {
+//	public class LodViewQueryable<T> : IQueryable<T> { // , IEqualityComparer<T> { // IOrderedQueryable<Resource> {
+	public class LodViewQueryable<T> : IOrderedQueryable<T> {
 
 		public string ViewUrl { get; private set; }
 		public IQueryProvider Provider { get; private set; }

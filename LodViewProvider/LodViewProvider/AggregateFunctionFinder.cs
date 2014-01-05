@@ -8,7 +8,7 @@ namespace LodViewProvider {
 
 	internal class AggregateFunctionFinder : ExpressionVisitor {
 
-		static readonly string[] aggMethodNames = { "Min", "Max", "Sum", "Count", "Average" };
+		static readonly string[] aggMethodNames = { "Min", "Max", "Sum", "Count", "Average", "GroupBy", "OrderBy", "OrderByDescending" };
 		readonly List<Tuple<MethodCallExpression, AggregationType>> aggMethodExpressions = new List<Tuple<MethodCallExpression, AggregationType>>();
 
 		protected override Expression VisitMethodCall( MethodCallExpression expression ) {
