@@ -3,14 +3,54 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+
 using LodViewProvider;
 
 namespace ProviderApp {
 	class Program {
 		static void Main( string[] args ) {
 
-			string viewUrl = "http://lodviewwebapp.herokuapp.com/test/1/";
+			// string viewUrl = "http://lodviewwebapp.herokuapp.com/test/1/";
+
+			const string viewBaseUrl = "http://172.16.225.1:4567/"; // Network Setting: NAT
+			string viewUrl = viewBaseUrl + "api/fixed/3/";
+
+			Console.WriteLine( viewUrl );
+
 			var context = new LodViewContext( viewUrl ).Resource;
+			var dicontext = new LodViewContext( viewUrl ).Dictionary;
+
+			var jcontext = new LodViewContext( viewUrl ).JTokens;
+			var stringlistcont = new LodViewContext( viewUrl ).StringList;
+
+			// var query = context.Select( e => e.Values["subject"] );
+			// var result = query.ToList();
+			// result.ForEach( e => Console.WriteLine( e ) );
+
+			var query = dicontext.Select( e => e["subject"] == "hoge" );
+			var hoge = query.ToArray();
+
+
+//			foreach ( var a in query ) {
+//				Console.WriteLine( a );
+//			}
+
+			// query.ToList().ForEach( e => Console.WriteLine( e ) );
+
+			// var query = context.Select( e => e.Values["subject"] == "inohiro" );
+			// var query = context.Select( e => e.Values["subject"] );
+			// var result = query.ToList();
+
+			// var query = stringlistcont.Select( e => e );
+			// var result = query.ToList();
+			// result.ForEach( e => Console.WriteLine( e ) );  // like a Tuple
+
+			// var count = context.Select( e => e.Values["subject"] ).Count();
+			// var count_result = context.ToString();
+			// var count_subject = context.Count( e => e.Values["subjec"] );
+			// var count_result = count_subject.ToString();
 
 			/*
 			 * 
@@ -20,13 +60,20 @@ namespace ProviderApp {
 
 			#region Selection
 
+			/*
+			 *  JSON.net (JToken)
+			 */
+
+			var jquery = jcontext.Select( e => e.SelectToken( "subject" ) ); // selection to result of API Access
+			// jquery.ToList().ForEach( e => Console.WriteLine( e.Last.Last.ToString() ) );
+
 			var all = from resource in context select resource;
 			// var allresult = all.ToArray();
 
 			var values = from resource in context
 						 where resource.Values["names"] == "inohiro"
 						 select resource;
-			var valuesresult = values.ToArray();
+			// var valuesresult = values.ToArray();
 
 			var values1 = context.Select( e => e.Values["name"] );
 			// var result1 = values1.ToArray();
@@ -69,8 +116,14 @@ namespace ProviderApp {
 
 			#region Count
 
+			// var dicount = dicontext.Count( e => e["subject"] != "" );
+			// Console.WriteLine( dicount.ToString() );
+
 			// var count = context.Count( e => e.Values["name"] == "inohiro" );
 			// var countresult = count.ToString();
+
+			var dicount = dicontext.Where( e => e["subject"] != "" ).Count();
+			Console.WriteLine( dicount.ToString() );
 
 			// var count2 = context.Where( e => e.Values["name"] == "inohiro" ).Count(); // Count() function will be executed at LINQ World after got result, I think...
 			// var count2result = count2.ToString();
@@ -96,7 +149,8 @@ namespace ProviderApp {
 			#region Max
 
 			// var max = context.Max( e => e.Values["age"] );
-			// var maxresult = max.ToArray();
+			// var max = dicontext.Max( e => e["age"] );
+			//var maxresult = max.ToArray();
 
 			// var max2 = context.Select( e => e.Values["age"] ).Max(); // Max() will be executed in LINQ World, I think...
 			// var max2result = max2.ToArray();

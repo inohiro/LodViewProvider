@@ -41,5 +41,9 @@ namespace LodViewProvider {
 		public Type ElementType {
 			get { return typeof( Resource ); }
 		}
+
+		public int Count( Func<Resource, bool> func ) {
+			throw new NotImplementedException();
+		}
 	}
 }

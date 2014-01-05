@@ -4,6 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Linq.Expressions;
 
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+
 namespace LodViewProvider {
 
 	public enum TargetMethodType {
@@ -80,7 +83,6 @@ namespace LodViewProvider {
 		private SingleSelection createSingleSelectionFunction( LambdaExpression lambdaExpression ) {
 			MethodCallExpression mCallExp = null;
 			string variable = null;
-			string conditionType = "System.String";
 
 			try {
 				mCallExp = lambdaExpression.Body as MethodCallExpression;
@@ -203,9 +205,60 @@ namespace LodViewProvider {
 			return request;
 		}
 
-		internal List<Resource> ProcessResult( string result ) {
-			Console.WriteLine( result );
-			return new List<Resource>();
+		internal List<Resource> ProcessResult( string response ) {
+
+			List<Resource> resources = new List<Resource>();
+			List<String> lines = response.Split( new char[] { '\n' } ).ToList();
+
+			var header = lines.First().Split( new char[] { '\t' } ).ToArray();
+			lines.RemoveAt( 0 ); // header
+
+			// lines.ForEach( line => line.Split( new char[] { '\t' } ).ToArray() );
+			foreach ( var line in lines ) {
+				var arry = line.Split( new char[] { '\t' } ).ToArray();
+				Resource resource = new Resource();
+				for ( int i = 0; i < arry.Length; i++ ) {
+					resource.Values.Add( header[i], arry[i] );
+				}
+				resources.Add( resource );
+			}
+
+			return resources;
+		}
+
+		internal List<Dictionary<String, String>> ProcessResultAsDictionary( string response ) {
+			List<Dictionary<String, String>> resources = new List<Dictionary<string, string>>();
+			List<String> lines = response.Split( new char[] { '\n' } ).ToList();
+
+			var header = lines.First().Split( new char[] { '\t' } ).Select( e => e.Replace( "\"", "" ) ).ToArray();
+			lines.RemoveAt( 0 ); // header
+
+			foreach ( var line in lines ) {
+				var arry = line.Split( new char[] { '\t' } ).ToArray();
+				Dictionary<String, String> resource = new Dictionary<string, string>();
+				for ( int i = 0; i < arry.Length; i++ ) {
+					resource.Add( header[i], arry[i] );
+				}
+				resources.Add( resource );
+			}
+
+			return resources;
+		}
+
+		internal List<List<String>> ProcessResultAsStringList( string response ) {
+			List<List<String>> result = new List<List<string>>();
+
+			List<String> lines = response.Split( new char[] { '\n' } ).ToList();
+			lines.RemoveAt( 0 ); // header
+			lines.ForEach( line => result.Add( line.Split( new char[] { '\t' } ).ToList() ) );
+
+			return result;
+		}
+
+		internal List<JToken> ProcessResultAsJtokens( string response ) {
+			JObject jObject = JObject.Parse( response );
+			var jTokens = jObject.SelectToken( "results" ).SelectToken( "bindings" ).ToList();
+			return jTokens;
 		}
 	}
 }

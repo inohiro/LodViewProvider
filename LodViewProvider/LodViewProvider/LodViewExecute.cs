@@ -30,7 +30,7 @@ namespace LodViewProvider {
 
 				// TODO: Consider Async Access
 				// client.OpenReadAsync( new Uri( request.FullURL()));
-
+				
 			}
 			catch ( WebException webex ) {
 				// TODO: Logger.log( webex );

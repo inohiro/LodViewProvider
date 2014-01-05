@@ -8,6 +8,9 @@ using System.Reflection;
 
 using LodViewProvider.LinqToTwitter;
 
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+
 namespace LodViewProvider {
 
 	/// <summary>
@@ -29,9 +32,27 @@ namespace LodViewProvider {
 
 		internal LodViewExecute LodViewExecutor { get; private set; }
 
+		public LodViewQueryable<Dictionary<String, String>> Dictionary {
+			get {
+				return new LodViewQueryable<Dictionary<string, string>>( this, ViewURI );
+			}
+		}
+
 		public LodViewQueryable<Resource> Resource {
 			get {
 				return new LodViewQueryable<Resource>( this, ViewURI );
+			}
+		}
+
+		public LodViewQueryable<JToken> JTokens {
+			get {
+				return new LodViewQueryable<JToken>( this, ViewURI );
+			}
+		}
+
+		public LodViewQueryable<List<String>> StringList {
+			get {
+				return new LodViewQueryable<List<string>>( this, ViewURI );
 			}
 		}
 
@@ -42,7 +63,18 @@ namespace LodViewProvider {
 			Request request = requestProcessor.CreateRequest( ViewURI, conditions );
 			string result = LodViewExecute.RequestToLod( request, requestProcessor );
 
-			var queryableResources = requestProcessor.ProcessResult( result ).AsQueryable();
+			// return result;
+
+			//
+			// I don't need to make Queryable resources. Because request result is already queried
+			// Currently, I don't know how to cancel remaining expression evaluation...
+			//
+	
+			// var queryableResources = requestProcessor.ProcessResult( result ).AsQueryable();
+			var queryableResources = requestProcessor.ProcessResultAsDictionary( result ).AsQueryable();
+			// var queryableResources = requestProcessor.ProcessResultAsStringList( result ).AsQueryable();
+			// var queryableResources = requestProcessor.ProcessResultAsJtokens( result ).AsQueryable();
+
 			var treeCopier = new ExpressionTreeModifier( queryableResources );
 			Expression newExpressionTree = treeCopier.CopyAndModify( expression );
 

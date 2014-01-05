@@ -4,13 +4,21 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+
 namespace LodViewProvider {
 
 	internal class ExpressionTreeModifier : ExpressionVisitor {
 
-		private IQueryable<Resource> queryableResources;
+		// private IQueryable<Resource> queryableResources;
+		// private IQueryable<JToken> queryableJtokens;
 
-		internal ExpressionTreeModifier( IQueryable<Resource> resources ) {
+		private IQueryable queryableResources;
+
+		// internal ExpressionTreeModifier( IQueryable<Resource> resources ) {
+		internal ExpressionTreeModifier( IQueryable resources ) {
+			// this.queryableResources = resources;
 			this.queryableResources = resources;
 		}
 
@@ -25,6 +33,8 @@ namespace LodViewProvider {
 
 		protected override Expression VisitConstant( ConstantExpression c ) {
 			if ( c.Type.Name == "LodViewQueryable`1" ) {
+				// return Expression.Constant( queryableResources );
+				// return Expression.Constant( queryableJtokens );
 				return Expression.Constant( queryableResources );
 			}
 			return c;
