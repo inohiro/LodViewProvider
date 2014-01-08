@@ -35,10 +35,28 @@ namespace ProviderApp {
 			// var gbresult = gby.ToList();
 
 
+			//var hogehgoe = from resource in dicontext
+			//            orderby resource["age"]
+			//            group resource by resource["labname"] into lab
+			//            select new { LabName = lab };
+
+			//var ag = from resouce in dicontext
+			//         group resouce by resouce["labname"] into lab
+			//         select new {
+			//             Lab = lab.Key,
+			//             Avg = lab.Average( e => e["age"] )
+			//         };
+
+			// var aaa = dicontext.GroupBy( e => e["labname"] );
+
+
 			var ob = dicontext.OrderBy( e => e["age"].Count() );
-			var obresult = ob.ToList();
-			var wob = dicontext.Where( e => e["name"] == "inohiro" ).GroupBy( e => e["Affiliation"] );
-			// var wobresult = wob.ToArray();
+			// var obresult = ob.ToList();
+			var wgb = dicontext.Where( e => e["name"] == "inohiro" ).GroupBy( e => e["Affiliation"] );
+			// var wgbresult = wgb.ToArray();
+
+			var wob = dicontext.Where( e => e["name"] == "inohiro" ).OrderBy( e => e["age"] );
+			var wobresult = wob.ToList();
 
 			var rob = dicontext.OrderByDescending( e => e["age"] );
 //			var orderby = from resource in dicontext
@@ -48,13 +66,14 @@ namespace ProviderApp {
 
 			var gbob = dicontext.Where( e => e["name"] == "inohiro" )
 				.GroupBy( e => e["Affiliation"] )
-				.Where( e => e.Count() < 30 )
-				.OrderBy( e => e.Count() );
+				.Where( e => e.Count() < 30 );
+//				.OrderBy( e => e.Count() );
 			var gbobresult = gbob.ToList();
 
 			var obgb = dicontext.Where( e => e["name"] == "inohiro" )
 				.GroupBy( e => e["Affiliation"] )
 				.OrderBy( e => e.Count() );
+			// var obgbresult = obgb.ToList();
 
 			// var avggb = dicontext.Average( e => Int32.Parse( e["age"] ) ); // we can not write following query?
 
