@@ -14,8 +14,9 @@ namespace ProviderApp {
 
 			// string viewUrl = "http://lodviewwebapp.herokuapp.com/test/1/";
 
-			const string viewBaseUrl = "http://172.16.225.1:4567/"; // Network Setting: NAT
-			string viewUrl = viewBaseUrl + "api/fixed/3/";
+			// const string viewBaseUrl = "http://172.16.225.1:4567/"; // Network Setting: NAT
+			const string viewBaseUrl = "http://192.168.58.1:4567/"; // Network Setting: NAT
+			string viewUrl = viewBaseUrl + "exp/1/";
 
 			Console.WriteLine( viewUrl );
 
@@ -24,6 +25,103 @@ namespace ProviderApp {
 			var jcontext = new LodViewContext( viewUrl ).JTokens;
 			var stringlistcont = new LodViewContext( viewUrl ).StringList;
 
+			var aaae = from resource in dicontext
+					   where Int32.Parse( resource["age"] ) > 40
+					   orderby resource["name"]
+					   select resource;
+			var aaaeresult = aaae.ToList();
+
+			var sel = dicontext
+				.Where( e => Int32.Parse( e["value"] ) < 400 )
+				.Average( e => Int32.Parse( e["value"] ) );
+			// var sel = dicontext.Where( e => Int32.Parse( e["value"] ) <= 400 ).Select( e => e["value"] );
+			// var sel = dicontext.OrderBy( e => Int32.Parse( e["value"] ) );
+			// var sel = dicontext.Min( e => Int32.Parse( e["value"] ) );
+			var selresult = sel.ToString();
+
+			Console.ReadKey();
+
+
+			var avgpa = from student in dicontext
+						group student by student["position"] into positions
+						select new {
+							Position = positions.Key,
+							Gpa = positions.Average( e => Int32.Parse( e["gpa"] ) )
+						};
+
+			var gpa = from student in dicontext
+					  group student by student["labname"] into lab
+					  select new {
+						  Lab = lab.Key, 
+						  Gpa = lab.Average( e => Int32.Parse( e["gpa"] ) ) };
+			var gparesult = gpa.ToList();
+
+			var h = dicontext.Select( e => e["name"] );
+			// var hresult = h.ToList();
+
+			var q = dicontext.Where( e => e["first"] == "Hiroyuki" );
+			// var qresult = q.ToList();
+
+			var v = dicontext.Where( e => e["first"] == "Hiroyuki" ).Select( e => e["labname"] );
+			var vresult = v.ToList();
+
+			var w = dicontext.Where( e => Int32.Parse( e["age"] ) <= 20 ).Select( e => e["name"] );
+			var z = from resource in dicontext
+					where resource["name"] == "Hiroyuki"
+					select resource["labname"];
+			// var labnames = z.ToList();
+
+			var a = dicontext
+				.Where( e => Int32.Parse( e["age"] ) <= 20 )
+				.Select( e => new {
+					Name = e["name"],
+					Age = e["age"]
+				} );
+			// var aresult = a.ToList();
+
+			var profs = from resource in dicontext
+						group resource by resource["pname"] into pnames
+						select new {
+							Pname = pnames.Key,
+							Sum = pnames.Sum( e => Int32.Parse( e["pop"] ) )
+						};
+			// var profsresult = profs.ToList();
+
+			// var bbb = dicontext.Select( e => e[""])
+
+			var ccc = dicontext.GroupBy( e => e["pname"] )
+				.Select( e => new {
+					Pname = e.Key,
+					pop = e.Select( p => p["pop"] )
+				} );
+			// var cccresult = ccc.ToList();
+
+			var aab = from r in dicontext
+					  where Int16.Parse( r["age"] ) <= 1000
+					  group r by r["pname"] into rs
+					  select new {
+						  Pname = rs.Key,
+						  Age = rs.Average( e => Int32.Parse( e["age"] ) ) 
+					  };
+			var aabresult = aab.ToList();
+
+			var aaa = dicontext
+				.Where( e => Int32.Parse( e["pop"] ) <= 10000 )
+				.GroupBy( e => e["pname"] )
+				.Select( e => new {
+					Pname = e.Key,
+					Sum = e.Sum( p => Int32.Parse( p["pop"] ) ) } )
+				.Where( e => e.Sum >= 10000 )
+				.OrderByDescending( e => e.Sum ); // OrderBy, OrderByDescending
+//			     Where( e => e.Sum >= 10000 ); // Having
+			// var aaaresult = aaa.ToList();
+
+			var popsum = from resouce in dicontext
+						 select new {
+							 Name = resouce["name"],
+							 Age = resouce["age"]
+						 }; //=> no problem
+			// var ppresult = popsum.ToList();
 
 //			var groupby = from resouce in dicontext
 //						  group resouce by resouce["Affiliation"];
@@ -125,7 +223,7 @@ namespace ProviderApp {
 			 * 
 			 */
 
-			#region Selection
+			#region Projection
 
 			/*
 			 *  JSON.net (JToken)

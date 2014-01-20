@@ -21,6 +21,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{D621EE
 		.nuget\NuGet.targets = .nuget\NuGet.targets
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExpressionViewer", "..\..\..\Visual Studio 2010\Projects\ExpressionViewer\ExpressionViewer\ExpressionViewer.csproj", "{6D709594-6F79-44D0-90EF-242955D4258F}"
+EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = LodViewProvider.vsmdi
@@ -64,6 +66,16 @@ Global
 		{AE39B55A-AEDA-4A26-B962-DD5A10E9FF1B}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{AE39B55A-AEDA-4A26-B962-DD5A10E9FF1B}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{AE39B55A-AEDA-4A26-B962-DD5A10E9FF1B}.Release|x86.ActiveCfg = Release|Any CPU
+		{6D709594-6F79-44D0-90EF-242955D4258F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6D709594-6F79-44D0-90EF-242955D4258F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6D709594-6F79-44D0-90EF-242955D4258F}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{6D709594-6F79-44D0-90EF-242955D4258F}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{6D709594-6F79-44D0-90EF-242955D4258F}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{6D709594-6F79-44D0-90EF-242955D4258F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6D709594-6F79-44D0-90EF-242955D4258F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6D709594-6F79-44D0-90EF-242955D4258F}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{6D709594-6F79-44D0-90EF-242955D4258F}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{6D709594-6F79-44D0-90EF-242955D4258F}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

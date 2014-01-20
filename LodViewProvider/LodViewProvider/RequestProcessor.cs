@@ -29,7 +29,7 @@ namespace LodViewProvider {
 						case ExpressionType.Equal: {
 							condition = createSingleSelectionFunctionFromBinaryExpression( lambdaExpression ); // Select a variable with condition
 						} break;
-						case ExpressionType.New: {
+						case ExpressionType.New: { 
 							condition = createMultipleSelectionFunction( lambdaExpression ); // Select many variables
 						} break;
 						case ExpressionType.Call: {
@@ -73,8 +73,17 @@ namespace LodViewProvider {
 
 			List<SingleSelection> singleSelections = new List<SingleSelection>();
 			foreach ( var arg in newExp.Arguments ) {
-				var mcall = arg as MethodCallExpression;
-				singleSelections.Add( new SingleSelection( mcall.Arguments[0].ToString() ) );
+				if ( arg.NodeType == ExpressionType.Call ) {
+					var mcall = arg as MethodCallExpression;
+					singleSelections.Add( new SingleSelection( mcall.Arguments[0].ToString() ) );
+				}
+				else if ( arg.NodeType == ExpressionType.MemberAccess ){ // parameter name of "GROUP BY INTO ~~"
+					var maccess = arg as MemberExpression;
+					if ( maccess.Expression.NodeType == ExpressionType.Parameter ) {
+						var parameter = maccess.Expression as ParameterExpression;
+						singleSelections.Add( new SingleSelection( parameter.Name ) );
+					}
+				}
 			}
 
 			return new MultipleSelection( singleSelections );

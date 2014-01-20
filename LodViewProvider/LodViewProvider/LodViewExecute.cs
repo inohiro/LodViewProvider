@@ -6,6 +6,8 @@ using System.Linq.Expressions;
 using System.Net;
 using System.IO;
 
+using System.Diagnostics;
+
 namespace LodViewProvider {
 
 	/// <summary>
@@ -16,10 +18,13 @@ namespace LodViewProvider {
 		internal static string RequestToLod( Request request, RequestProcessor requestProcessor ) {
 			// TODO: create Logger
 
+			Stopwatch time = new Stopwatch();
+
 			string response = String.Empty;
 			string httpStatus = String.Empty;
 			WebClient client = new WebClient();
 
+			time.Start();
 			try {
 				// TODO: Check Full URL
 				string fullUrl = request.FullURL();
@@ -36,6 +41,11 @@ namespace LodViewProvider {
 				// TODO: Logger.log( webex );
 				throw webex;
 			}
+
+			time.Stop();
+
+			Console.WriteLine( time.ElapsedMilliseconds );
+			Console.ReadKey();
 
 			// TODO: should check the status code
 			return response;

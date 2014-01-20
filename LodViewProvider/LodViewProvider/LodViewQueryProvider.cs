@@ -5,6 +5,8 @@ using System.Text;
 using System.Linq.Expressions;
 using System.Reflection;
 
+using ExpressionViewer;
+
 namespace LodViewProvider {
 
 	/// <summary>
@@ -30,7 +32,9 @@ namespace LodViewProvider {
 			}
 		}
 
-		public TResult Execute<TResult>( Expression expression ) {
+public TResult Execute<TResult>( Expression expression ) {
+			// ( ( Expression ) expression ).Show();
+
 			bool isEnumerable = typeof( TResult ).Name == "IEnumerable`1" || typeof( TResult ).Name == "IEnumerable";
 			Type resultType = new MethodCallExpressionTypeFinder().GetGenericType( expression );
 			var genericArguments = new[] { resultType };
