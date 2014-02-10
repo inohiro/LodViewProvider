@@ -18,34 +18,26 @@ namespace LodViewProvider {
 		internal static string RequestToLod( Request request, RequestProcessor requestProcessor ) {
 			// TODO: create Logger
 
-			Stopwatch time = new Stopwatch();
-
 			string response = String.Empty;
 			string httpStatus = String.Empty;
 			WebClient client = new WebClient();
 
-			time.Start();
 			try {
 				// TODO: Check Full URL
 				string fullUrl = request.FullURL();
 				using ( Stream stream = client.OpenRead( fullUrl ) ) {
 					StreamReader streamReader = new StreamReader( stream );
 					response = streamReader.ReadToEnd();
+					// Console.WriteLine( response );
 				}
 
 				// TODO: Consider Async Access
 				// client.OpenReadAsync( new Uri( request.FullURL()));
-				
 			}
 			catch ( WebException webex ) {
 				// TODO: Logger.log( webex );
 				throw webex;
 			}
-
-			time.Stop();
-
-			Console.WriteLine( time.ElapsedMilliseconds );
-			Console.ReadKey();
 
 			// TODO: should check the status code
 			return response;

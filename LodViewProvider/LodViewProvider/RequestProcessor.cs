@@ -279,8 +279,33 @@ namespace LodViewProvider {
 
 		internal List<JToken> ProcessResultAsJtokens( string response ) {
 			JObject jObject = JObject.Parse( response );
-			var jTokens = jObject.SelectToken( "results" ).SelectToken( "bindings" ).ToList();
-			return jTokens;
+
+			var variables = jObject.SelectToken( "head" ).SelectToken( "vars" ).ToList();
+			var bindings = jObject.SelectToken( "results" ).SelectToken( "bindings" ).ToList();
+
+			// var list = new List<JToken>();
+			// jObject.SelectToken( "results" ).SelectToken( "bindings" ).ToList().ForEach( e => list.Add( e["value"]["value"] ) );
+			// return list;
+
+			var results = new List<JToken>();
+
+			var root = new Dictionary<String, List<Dictionary<String, String>>>();
+			var entries = new List<Dictionary<String,String>>();
+
+			bindings.ForEach( e => {
+				var entry = new Dictionary<String, String>();
+				variables.ForEach( v => {
+					var key = v.ToString();
+					entry.Add( key, e[key]["value"].ToString() );
+				} );
+				entries.Add( entry );
+			} );
+			root.Add( "entries", entries );
+
+			var rootObject = JObject.Parse( JsonConvert.SerializeObject( root ) );
+			results = rootObject.SelectToken( "entries" ).ToList();
+
+			return results;
 		}
 	}
 }

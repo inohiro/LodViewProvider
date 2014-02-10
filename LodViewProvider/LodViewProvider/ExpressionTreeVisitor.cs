@@ -193,7 +193,13 @@ namespace LodViewProvider {
 			Expression obj = this.Visit( m.Object );
 			IEnumerable<Expression> args = this.VisitExpressionList( m.Arguments );
 			if ( obj != m.Object || args != m.Arguments ) {
-				return Expression.Call( obj, m.Method, args );
+				try {
+					return Expression.Call( obj, m.Method, args );
+				}
+				catch( ArgumentException ){
+					// Console.WriteLine( "ArgumentException" );
+					Environment.Exit( 1 );
+				}
 			}
 			return m;
 		}

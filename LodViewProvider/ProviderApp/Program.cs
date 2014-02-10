@@ -14,33 +14,50 @@ namespace ProviderApp {
 
 			// string viewUrl = "http://lodviewwebapp.herokuapp.com/test/1/";
 
-			// const string viewBaseUrl = "http://172.16.225.1:4567/"; // Network Setting: NAT
-			const string viewBaseUrl = "http://192.168.58.1:4567/"; // Network Setting: NAT
+			const int viewBaseUrlPort = 5000;
+			const string viewBaseHost = "192.168.58.1";
+			string viewBaseUrl = String.Format( "http://{0}:{1}/", viewBaseHost, viewBaseUrlPort.ToString() );
 			string viewUrl = viewBaseUrl + "exp/1/";
 
 			Console.WriteLine( viewUrl );
+
+			//
+			// Initialize Contxts
+			//
 
 			var context = new LodViewContext( viewUrl ).Resource;
 			var dicontext = new LodViewContext( viewUrl ).Dictionary;
 			var jcontext = new LodViewContext( viewUrl ).JTokens;
 			var stringlistcont = new LodViewContext( viewUrl ).StringList;
 
-			var aaae = from resource in dicontext
-					   where Int32.Parse( resource["age"] ) > 40
-					   orderby resource["name"]
-					   select resource;
-			var aaaeresult = aaae.ToList();
+			//
+			// For notation in paper
+			//
 
-			var sel = dicontext
-				.Where( e => Int32.Parse( e["value"] ) < 400 )
-				.Average( e => Int32.Parse( e["value"] ) );
-			// var sel = dicontext.Where( e => Int32.Parse( e["value"] ) <= 400 ).Select( e => e["value"] );
-			// var sel = dicontext.OrderBy( e => Int32.Parse( e["value"] ) );
-			// var sel = dicontext.Min( e => Int32.Parse( e["value"] ) );
-			var selresult = sel.ToString();
+			var bbb = from resource in dicontext
+					  where resource["labname"] == "北川データ工学研究室"
+					  select resource["first"];
+			// var bbbresult = bbb.ToList();
+			// var aaae = dicontext.Where( e => Int32.Parse( e["age"] ) > 40 ).OrderBy( e => e["name"] ).Select( e => e ).ToList();
+			// var bbbe = dicontext.Where( e => e["labname"] == "北川データ工学研究室" ).Select( e => e["first"] );
+
+			//
+			// for Experiment
+			//
+
+			// var sel_avg = dicontext.Where( e => Int32.Parse( e["value"] ) < 400 ).Average( e => Int32.Parse( e["value"] ) ).ToString();
+			// var sel_pro = dicontext.Where( e => Int32.Parse( e["value"] ) <= 400 ).Select( e => e ).ToList();
+			var sel_pro = dicontext.Where( e => Int32.Parse( e["value"] ) <= 400 ).Select( e => e["value"] ).ToList();
+
+			// var sel_pro = dicontext.Where( e => Int32.Parse( e["value"] ) <= 400 ).OrderBy( e => e["value"] ).Select( e => e["label"] ).ToList();
+			// => Selection after OrderBy will be ignored (optional)
+
+			// var orderby = dicontext.OrderBy( e => Int32.Parse( e["value"] ) ).ToList();
+			// var min = dicontext.Min( e => Int32.Parse( e["value"] ) ).ToString();
+			// var max = dicontext.Max( e => Int32.Parse( e["value"] ) ).ToString();
+			// var avg = dicontext.Average( e => Int32.Parse( e["value"] ) ).ToString();
 
 			Console.ReadKey();
-
 
 			var avgpa = from student in dicontext
 						group student by student["position"] into positions
@@ -52,7 +69,7 @@ namespace ProviderApp {
 			var gpa = from student in dicontext
 					  group student by student["labname"] into lab
 					  select new {
-						  Lab = lab.Key, 
+						  Lab = lab.Key,
 						  Gpa = lab.Average( e => Int32.Parse( e["gpa"] ) ) };
 			var gparesult = gpa.ToList();
 

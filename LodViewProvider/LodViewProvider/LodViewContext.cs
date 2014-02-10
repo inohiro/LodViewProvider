@@ -5,6 +5,7 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Net;
 using System.Reflection;
+using System.Diagnostics;
 
 using LodViewProvider.LinqToTwitter;
 
@@ -58,22 +59,51 @@ namespace LodViewProvider {
 
 		public virtual object Execute<T>( Expression expression, bool isEnumerable ) {
 			var requestProcessor = new RequestProcessor();
+
+			long sum = 0;
+			var stopwatch = new Stopwatch();
+
+			//
+			// TIME: Analyze ExpressionTree
+			//
+			stopwatch.Start();
 			var conditions = getRequestParameters( expression, requestProcessor );
+			stopwatch.Stop();
+			Console.WriteLine( "ANALYZE: \t{0}", stopwatch.ElapsedMilliseconds.ToString() );
+			sum += stopwatch.ElapsedMilliseconds;
 
 			Request request = requestProcessor.CreateRequest( ViewURI, conditions );
-			string result = LodViewExecute.RequestToLod( request, requestProcessor );
-
-			// return result;
 
 			//
+			// TIME: Request
+			//
+			stopwatch.Restart();
+			string result = LodViewExecute.RequestToLod( request, requestProcessor );
+			Console.WriteLine( "REQUEST: \t{0}", stopwatch.ElapsedMilliseconds.ToString() );
+			sum += stopwatch.ElapsedMilliseconds;
+
+			//
+			// TIME: Conversion Results
+			//
+			stopwatch.Restart();
+
 			// I don't need to make Queryable resources. Because request result is already queried
 			// Currently, I don't know how to cancel remaining expression evaluation...
-			//
-	
+
 			// var queryableResources = requestProcessor.ProcessResult( result ).AsQueryable();
-			var queryableResources = requestProcessor.ProcessResultAsDictionary( result ).AsQueryable();
+			// var queryableResources = requestProcessor.ProcessResultAsDictionary( result ).AsQueryable();
 			// var queryableResources = requestProcessor.ProcessResultAsStringList( result ).AsQueryable();
-			// var queryableResources = requestProcessor.ProcessResultAsJtokens( result ).AsQueryable();
+			var queryableResources = requestProcessor.ProcessResultAsJtokens( result ).AsQueryable();
+
+			stopwatch.Stop();
+			Console.WriteLine( "CONVERT: \t{0}", stopwatch.ElapsedMilliseconds.ToString() );
+			sum += stopwatch.ElapsedMilliseconds;
+			Console.WriteLine( "TOTAL: \t\t{0}", sum.ToString() );
+			Console.WriteLine( "RESULT SIZE: \t{0}", queryableResources.Count().ToString() );
+
+			Console.ReadKey();
+			Console.WriteLine( "\n" + result );
+			Console.ReadKey();
 
 			var treeCopier = new ExpressionTreeModifier( queryableResources );
 			Expression newExpressionTree = treeCopier.CopyAndModify( expression );
