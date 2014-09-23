@@ -14,13 +14,12 @@ namespace ProviderApp {
 
 			// string viewUrl = "http://lodviewwebapp.herokuapp.com/test/1/";
 
-			const int viewBaseUrlPort = 5000;
+			const int viewBaseUrlPort = 4567;
 			const string viewBaseHost = "192.168.58.1";
 			string viewBaseUrl = String.Format( "http://{0}:{1}/", viewBaseHost, viewBaseUrlPort.ToString() );
 			string viewUrl = viewBaseUrl + "exp/1/";
 
 			Console.WriteLine( viewUrl );
-
 			//
 			// Initialize Contxts
 			//
@@ -34,10 +33,22 @@ namespace ProviderApp {
 			// For notation in paper
 			//
 
+			var aaabb = from resource in dicontext
+					  where resource["object"] == "Capital"
+					  select resource;
+			var result = aaabb.ToList();
+			result.ForEach( e => {
+				var subject = e["subject"];
+				var obj = e["object"];
+				Console.WriteLine( "-----------------------------------------" );
+				Console.WriteLine( "subject: {0}, obj: {1}", subject, obj );
+			} );
+			// Console.WriteLine(result);
+
 			var bbb = from resource in dicontext
 					  where resource["labname"] == "北川データ工学研究室"
 					  select resource["first"];
-			// var bbbresult = bbb.ToList();
+			var bbbresult = bbb.ToList();
 			// var aaae = dicontext.Where( e => Int32.Parse( e["age"] ) > 40 ).OrderBy( e => e["name"] ).Select( e => e ).ToList();
 			// var bbbe = dicontext.Where( e => e["labname"] == "北川データ工学研究室" ).Select( e => e["first"] );
 
@@ -47,10 +58,12 @@ namespace ProviderApp {
 
 			// var sel_avg = dicontext.Where( e => Int32.Parse( e["value"] ) < 400 ).Average( e => Int32.Parse( e["value"] ) ).ToString();
 			// var sel_pro = dicontext.Where( e => Int32.Parse( e["value"] ) <= 400 ).Select( e => e ).ToList();
-			var sel_pro = dicontext.Where( e => Int32.Parse( e["value"] ) <= 400 ).Select( e => e["value"] ).ToList();
+			// var sel_pro = dicontext.Where( e => Int32.Parse( e["value"] ) <= 400 ).Select( e => e["value"] ).ToList();
+
+			var aaaaa = dicontext.Where( e => Int32.Parse( e["value"] ) < 400 ).Select( e => new { Value = e["value"], Label = e["label"] } ).ToList();
 
 			// var sel_pro = dicontext.Where( e => Int32.Parse( e["value"] ) <= 400 ).OrderBy( e => e["value"] ).Select( e => e["label"] ).ToList();
-			// => Selection after OrderBy will be ignored (optional)
+			// => Projection after OrderBy will be ignored (optional)
 
 			// var orderby = dicontext.OrderBy( e => Int32.Parse( e["value"] ) ).ToList();
 			// var min = dicontext.Min( e => Int32.Parse( e["value"] ) ).ToString();

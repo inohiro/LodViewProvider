@@ -249,22 +249,7 @@ namespace LodViewProvider {
 		}
 
 		internal List<Dictionary<String, String>> ProcessResultAsDictionary( string response ) {
-			List<Dictionary<String, String>> resources = new List<Dictionary<string, string>>();
-			List<String> lines = response.Split( new char[] { '\n' } ).ToList();
-
-			var header = lines.First().Split( new char[] { '\t' } ).Select( e => e.Replace( "\"", "" ) ).ToArray();
-			lines.RemoveAt( 0 ); // header
-
-			foreach ( var line in lines ) {
-				var arry = line.Split( new char[] { '\t' } ).ToArray();
-				Dictionary<String, String> resource = new Dictionary<string, string>();
-				for ( int i = 0; i < arry.Length; i++ ) {
-					resource.Add( header[i], arry[i] );
-				}
-				resources.Add( resource );
-			}
-
-			return resources;
+			return parseResponseToDictionaryList( response );
 		}
 
 		internal List<List<String>> ProcessResultAsStringList( string response ) {
@@ -278,19 +263,23 @@ namespace LodViewProvider {
 		}
 
 		internal List<JToken> ProcessResultAsJtokens( string response ) {
-			JObject jObject = JObject.Parse( response );
+			var results = new List<JToken>();
+			var root = new Dictionary<String, List<Dictionary<String, String>>>();
+			var entries = parseResponseToDictionaryList( response );
+			root.Add( "entries", entries );
 
+			var rootObject = JObject.Parse( JsonConvert.SerializeObject( root ) );
+			results = rootObject.SelectToken( "entries" ).ToList();
+
+			return results;
+		}
+
+		private List<Dictionary<String, String>> parseResponseToDictionaryList( string response ) {
+			JObject jObject = JObject.Parse( response );
 			var variables = jObject.SelectToken( "head" ).SelectToken( "vars" ).ToList();
 			var bindings = jObject.SelectToken( "results" ).SelectToken( "bindings" ).ToList();
 
-			// var list = new List<JToken>();
-			// jObject.SelectToken( "results" ).SelectToken( "bindings" ).ToList().ForEach( e => list.Add( e["value"]["value"] ) );
-			// return list;
-
-			var results = new List<JToken>();
-
-			var root = new Dictionary<String, List<Dictionary<String, String>>>();
-			var entries = new List<Dictionary<String,String>>();
+			List<Dictionary<String, String>> entries = new List<Dictionary<string,string>>();
 
 			bindings.ForEach( e => {
 				var entry = new Dictionary<String, String>();
@@ -300,12 +289,8 @@ namespace LodViewProvider {
 				} );
 				entries.Add( entry );
 			} );
-			root.Add( "entries", entries );
 
-			var rootObject = JObject.Parse( JsonConvert.SerializeObject( root ) );
-			results = rootObject.SelectToken( "entries" ).ToList();
-
-			return results;
+			return entries;
 		}
 	}
 }

@@ -91,9 +91,13 @@ namespace LodViewProvider {
 			// Currently, I don't know how to cancel remaining expression evaluation...
 
 			// var queryableResources = requestProcessor.ProcessResult( result ).AsQueryable();
-			// var queryableResources = requestProcessor.ProcessResultAsDictionary( result ).AsQueryable();
+			var queryableResources = requestProcessor.ProcessResultAsDictionary( result ).AsQueryable();
 			// var queryableResources = requestProcessor.ProcessResultAsStringList( result ).AsQueryable();
-			var queryableResources = requestProcessor.ProcessResultAsJtokens( result ).AsQueryable();
+			// var queryableResources = requestProcessor.ProcessResultAsJtokens( result ).AsQueryable();
+			// var resources = requestProcessor.ProcessResultAsJtokens( result );
+			// var queryableResources = resources.AsQueryable();
+
+			// return resources;
 
 			stopwatch.Stop();
 			Console.WriteLine( "CONVERT: \t{0}", stopwatch.ElapsedMilliseconds.ToString() );
